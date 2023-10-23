@@ -1,4 +1,4 @@
-# relight
+# Realight
 
 To install dependencies:
 
