@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // import { createServer } from "../src/create-server";
 // import { unlink } from "node:fs/promises";
 // import fs from "node:fs";
