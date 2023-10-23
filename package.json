@@ -3,6 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
+    "lint": "bunx @biomejs/biome lint index.ts",
+    "build": "bun build ./index.ts --outdir ./dist",
     "release": "bun run build && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
