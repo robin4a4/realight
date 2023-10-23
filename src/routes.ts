@@ -1,5 +1,4 @@
-
-export function path<TView>(path: string, view: TView) {
+export function path(path: string, view: string) {
 	return {
 		path,
 		view,

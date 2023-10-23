@@ -7,10 +7,16 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/src/index.js",
+    "./form": "./dist/src/Form.js",
+    "./hooks": "./dist/src/hooks.js",
+    "./responses": "./dist/src/responses.js",
+    "./cli/dev": "./dist/cli/dev.js",
+    "./cli/prod": "./dist/cli/prod.js",
     "./package.json": "./package.json"
   },
   "bin": {
-    "realight": "./dist/cli/build-framework-dev.js"
+    "realight dev": "./dist/cli/dev.js",
+    "realight": "./dist/cli/prod.js"
   },
   "scripts": {
     "lint": "bunx @biomejs/biome lint ./src/index.ts",

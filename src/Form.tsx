@@ -1,3 +1,6 @@
+/// <reference lib="dom" />
+/// <reference lib="dom.iterable" />
+
 import { ComponentProps, FormEvent, useRef, useState } from "react";
 import { useInternalMutationData } from "./mutation-data-context";
 import { useInternalQueryData } from "./query-data-context";

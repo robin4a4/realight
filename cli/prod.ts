@@ -1,22 +1,26 @@
+#!/usr/bin/env bun
+
 import { unlink } from "node:fs/promises";
 import fs from "node:fs";
-import routes from "../src/routes";
+import { path } from "../src/routes";
 
-console.log("client...");
+const currentDirectory = process.cwd();
+
+const routes = await import(`${currentDirectory}/routes.ts`);
 
 if (!fs.existsSync("./tmp")) {
 	fs.mkdirSync("./tmp");
 }
 
-routes.forEach(async (route) => {
+routes?.forEach(async (route: ReturnType<typeof path>) => {
 	const path = "./tmp/client-framework.jsx";
 	await Bun.write(
 		path,
 		`
     import { Layout } from "../framework/Layout";
     import { hydrateRoot } from "react-dom/client";
-    import Page from "../src/views/${route.view}.tsx";
-    import "../src/global.css";
+    import Page from "${currentDirectory}/src/views/${route.view}.tsx";
+    import "${currentDirectory}/src/global.css";
 
     hydrateRoot(document,<Layout data={window.__INITIAL_DATA__} manifest={window.__MANIFEST__}><Page/></Layout>);
   `,
@@ -26,14 +30,12 @@ routes.forEach(async (route) => {
 console.log("Building...");
 const result = await Bun.build({
 	entrypoints: ["./tmp/client-framework.jsx"],
-	outdir: "./dist",
+	outdir: `${currentDirectory}/dist`,
 });
-console.log("Cleaning up...");
 await unlink("./tmp/client-framework.jsx");
 
-const manifestObject = result.outputs.map((output) => {
+const manifest = result.outputs.map((output) => {
 	return output.path.split("/").pop();
-});
-console.log("manifestObject", manifestObject);
-console.log(JSON.stringify(manifestObject));
-Bun.write("./dist/manifest.json", JSON.stringify(manifestObject));
+}) as string[];
+console.log(manifest);
+Bun.write(`${currentDirectory}/dist/manifest.json`, JSON.stringify(manifest));

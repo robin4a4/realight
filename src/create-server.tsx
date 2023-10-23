@@ -1,9 +1,12 @@
 import { renderToReadableStream } from "react-dom/server";
-import routes from "../src/routes";
+import { path } from "../src/routes";
 import { JsonResponse } from "./responses";
 import { Layout } from "./Layout";
 
-export function createServer(devManifest?: Array<string>) {
+export function createServer(
+  routes: Array<ReturnType<typeof path>>,
+  devManifest?: Array<string>
+) {
   return Bun.serve({
     port: process.env.PORT || 8080,
     async fetch(req) {
