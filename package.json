@@ -1,15 +1,35 @@
 {
   "version": "0.0.1",
   "name": "relight",
-  "module": "index.ts",
+  "license": "MIT",
+  "author": "Robin Marillia",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "react",
+    "bun",
+    "ssr",
+    "framework",
+    "server"
+  ],
   "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "lint": "bunx @biomejs/biome lint index.ts",
-    "build": "bun build ./index.ts --outdir ./dist",
+    "build": "bun run ./src/build.ts",
     "release": "bun run build && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
     "@biomejs/biome": "1.3.1",
+    "bun-plugin-dts": "^0.2.1",
     "bun-types": "latest"
   },
   "peerDependencies": {
