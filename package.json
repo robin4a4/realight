@@ -19,7 +19,7 @@
     "realight": "./dist/cli/prod.js"
   },
   "scripts": {
-    "lint": "bunx @biomejs/biome lint ./src/index.ts",
+    "lint": "bunx @biomejs/biome lint ./src",
     "build": "bun run ./build.ts",
     "release": "bun run build && bunx changeset publish && git push --follow-tags"
   },
