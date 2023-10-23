@@ -1,4 +1,4 @@
-# relight
+# realight
 
 ## 0.0.1
 
