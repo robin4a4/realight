@@ -1,7 +1,6 @@
-import { createServer } from "../create-server";
 import { unlink } from "node:fs/promises";
 import fs from "node:fs";
-import routes from "../routes";
+import routes from "../src/routes";
 
 console.log("client...");
 
@@ -32,10 +31,9 @@ const result = await Bun.build({
 console.log("Cleaning up...");
 await unlink("./tmp/client-framework.jsx");
 
-const manifest = result.outputs.map((output) => {
+const manifestObject = result.outputs.map((output) => {
 	return output.path.split("/").pop();
-}) as string[];
-console.log(manifest);
-const server = createServer(manifest);
-
-console.log(`Listening on port ${server.port}`);
+});
+console.log("manifestObject", manifestObject);
+console.log(JSON.stringify(manifestObject));
+Bun.write("./dist/manifest.json", JSON.stringify(manifestObject));
