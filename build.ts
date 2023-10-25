@@ -5,10 +5,12 @@ await Bun.build({
 		"./src/Form.tsx",
 		"./src/hooks.ts",
 		"./src/responses.ts",
+		"./src/routes.ts",
+		"./src/Layout.tsx",
 		"./cli/dev.ts",
 		"./cli/prod.ts",
 	],
 	outdir: "./dist",
 	plugins: [dts()],
-	minify: true,
+	external: ["react", "react-dom"],
 });

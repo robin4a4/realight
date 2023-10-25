@@ -5,37 +5,37 @@ import fs from "node:fs";
 import { path } from "../src/routes";
 
 const currentDirectory = process.cwd();
-
-const routes = await import(`${currentDirectory}/routes.ts`);
-
+const routes = await import(`${currentDirectory}/src/routes.ts`);
 if (!fs.existsSync("./tmp")) {
 	fs.mkdirSync("./tmp");
 }
-
-routes?.forEach(async (route: ReturnType<typeof path>) => {
-	const path = "./tmp/client-framework.jsx";
+routes.default?.forEach(async (route: ReturnType<typeof path>) => {
 	await Bun.write(
-		path,
+		"./tmp/client-framework.jsx",
 		`
-    import { Layout } from "../framework/Layout";
-    import { hydrateRoot } from "react-dom/client";
-    import Page from "${currentDirectory}/src/views/${route.view}.tsx";
-    import "${currentDirectory}/src/global.css";
-
-    hydrateRoot(document,<Layout data={window.__INITIAL_DATA__} manifest={window.__MANIFEST__}><Page/></Layout>);
-  `,
+		import { Layout } from "realight/layout";
+		import { hydrateRoot } from "react-dom/client";
+		import Page from "../src/views/${route.view}.tsx";
+		import "../src/global.css";
+		
+		hydrateRoot(document,<Layout data={window.__INITIAL_DATA__} manifest={window.__MANIFEST__}><Page/></Layout>);
+		`,
 	);
 });
 
 console.log("Building...");
+if (!fs.existsSync("./dist")) {
+	fs.mkdirSync("./dist");
+}
 const result = await Bun.build({
 	entrypoints: ["./tmp/client-framework.jsx"],
-	outdir: `${currentDirectory}/dist`,
+	outdir: "./dist",
+	external: ["react", "react-dom"],
 });
-await unlink("./tmp/client-framework.jsx");
+fs.rmSync("./tmp", { recursive: true });
 
 const manifest = result.outputs.map((output) => {
 	return output.path.split("/").pop();
 }) as string[];
 console.log(manifest);
-Bun.write(`${currentDirectory}/dist/manifest.json`, JSON.stringify(manifest));
+Bun.write("./dist/manifest.json", JSON.stringify(manifest));

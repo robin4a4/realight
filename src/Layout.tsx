@@ -10,6 +10,7 @@ export function Layout({
   data: Record<string, unknown>;
   manifest: string[];
 }) {
+  console.log("CHILDREN", children);
   return (
     <html lang="en">
       <head>
