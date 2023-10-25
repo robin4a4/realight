@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.5
+
+### Patch Changes
+
+- 58ccdc2: fix basic setup
+
 ## 0.0.4
 
 ### Patch Changes
