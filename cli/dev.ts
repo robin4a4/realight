@@ -31,7 +31,6 @@ if (!fs.existsSync("./dist")) {
 const result = await Bun.build({
 	entrypoints: ["./tmp/client-framework.jsx"],
 	outdir: "./dist",
-	external: ["react", "react-dom"],
 });
 fs.rmSync("./tmp", { recursive: true });
 
