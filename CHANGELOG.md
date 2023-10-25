@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.6
+
+### Patch Changes
+
+- 5fa4950: add client script
+
 ## 0.0.5
 
 ### Patch Changes
