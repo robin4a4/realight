@@ -43,13 +43,13 @@ export function createServer(
             const stream = await renderToReadableStream(
               <Layout data={data} manifest={manifest}>
                 <PageComponent />
-              </Layout>
-              // {
-              //   bootstrapScripts: ["/dist/client-framework.js"],
-              //   bootstrapScriptContent: `
-              //           window.__INITIAL_DATA__=${JSON.stringify(data)};
-              //             window.__MANIFEST__=${JSON.stringify(manifest)};`,
-              // }
+              </Layout>,
+              {
+                bootstrapScripts: ["/dist/client-framework.js"],
+                bootstrapScriptContent: `
+                        window.__INITIAL_DATA__=${JSON.stringify(data)};
+                          window.__MANIFEST__=${JSON.stringify(manifest)};`,
+              }
             );
             return new Response(stream, {
               headers: {
