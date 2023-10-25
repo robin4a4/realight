@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.7
+
+### Patch Changes
+
+- 7e32681: build everything
+
 ## 0.0.6
 
 ### Patch Changes
