@@ -38,7 +38,7 @@ export function createServer(
                 <PageComponent />
               </Layout>,
               {
-                bootstrapScripts: ["/dist/client-framework.js"],
+                bootstrapModules: ["/dist/client-framework.js"],
                 bootstrapScriptContent: `
                         window.__INITIAL_DATA__=${JSON.stringify(data)};
                           window.__MANIFEST__=${JSON.stringify(manifest)};`,
