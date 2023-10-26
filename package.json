@@ -6,7 +6,7 @@
   "type": "module",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/src/index.js",
+    ".": "./dist/index.js",
     "./cli/dev": "./dist/cli/dev.js",
     "./cli/prod": "./dist/cli/prod.js",
     "./package.json": "./package.json"
