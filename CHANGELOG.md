@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.9
+
+### Patch Changes
+
+- 839f65a: fix cli
+
 ## 0.0.8
 
 ### Patch Changes
