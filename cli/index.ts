@@ -62,6 +62,6 @@ cli.command("build").action(async () => {
 });
 
 cli.help();
-cli.version("0.0.1");
+cli.version("0.0.15");
 
 cli.parse();
