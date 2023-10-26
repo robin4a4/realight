@@ -7,11 +7,6 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/src/index.js",
-    "./form": "./dist/src/Form.js",
-    "./hooks": "./dist/src/hooks.js",
-    "./responses": "./dist/src/responses.js",
-    "./routes": "./dist/src/routes.js",
-    "./layout": "./dist/src/Layout.js",
     "./cli/dev": "./dist/cli/dev.js",
     "./cli/prod": "./dist/cli/prod.js",
     "./package.json": "./package.json"

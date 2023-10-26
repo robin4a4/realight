@@ -18,7 +18,6 @@ export function QueryProvider({
   initialData: Record<string, unknown>;
   children: React.ReactNode;
 }) {
-  console.log("DEBUG: QueryProvider");
   const [currentQueryData, setCurrentQueryData] = useState(initialData);
   return (
     <QueryContext.Provider
