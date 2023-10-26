@@ -14,7 +14,7 @@ routes.default?.forEach(async (route: ReturnType<typeof path>) => {
 	await Bun.write(
 		"./tmp/client-framework.jsx",
 		`
-		import { Layout } from "realight/layout";
+		import { Layout } from "realight";
 		import { hydrateRoot } from "react-dom/client";
 		import Page from "../src/views/${route.view}.tsx";
 		import "../src/global.css";
