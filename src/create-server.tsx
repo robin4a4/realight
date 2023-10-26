@@ -1,17 +1,10 @@
-import { useState } from "react";
 import { renderToReadableStream } from "react-dom/server";
 import { path } from "../src/routes";
 import { JsonResponse } from "./responses";
 import { Layout } from "./Layout";
 
 const currentDirectory = process.cwd();
-function Page() {
-  //   const { title, todos } = useQueryData<typeof query>();
-  const [count, setCount] = useState(0);
-  //   const { test, bonjour } = useMutationData<typeof mutate>();
-  //   const form = useForm();
-  return <div>{count}</div>;
-}
+
 export function createServer(
   routes: { default: Array<ReturnType<typeof path>> },
   devManifest?: Array<string>
@@ -80,7 +73,6 @@ export function createServer(
 
       // return dist files
       if (url.pathname.startsWith("/dist")) {
-        console.log(url.pathname);
         const file = Bun.file(url.pathname.replace(/^\/+/, ""));
         if (!file) return new Response("Not Found", { status: 404 });
         return new Response(file, {

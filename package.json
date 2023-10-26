@@ -7,12 +7,10 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
-    "./cli/dev": "./dist/cli/dev.js",
-    "./cli/prod": "./dist/cli/prod.js",
     "./package.json": "./package.json"
   },
   "bin": {
-    "realight": "./dist/cli/dev.js"
+    "realight": "./dist/cli/index.js"
   },
   "scripts": {
     "lint": "bunx @biomejs/biome lint ./src",
@@ -47,6 +45,7 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "@changesets/cli": "^2.26.2"
+    "@changesets/cli": "^2.26.2",
+    "cac": "^6.7.14"
   }
 }
