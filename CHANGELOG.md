@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.10
+
+### Patch Changes
+
+- d89b92e: fix export
+
 ## 0.0.9
 
 ### Patch Changes
