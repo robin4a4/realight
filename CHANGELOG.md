@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.11
+
+### Patch Changes
+
+- 8355114: add cli and try splitting
+
 ## 0.0.10
 
 ### Patch Changes
