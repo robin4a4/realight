@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.19
+
+### Patch Changes
+
+- e51a79b: fix type and add public
+
 ## 0.0.18
 
 ### Patch Changes
