@@ -89,6 +89,17 @@ export function createServer(devManifest?: Array<string>) {
         });
       }
 
+      // return public files
+      if (url.pathname.startsWith("/public")) {
+        const file = Bun.file(url.pathname.replace(/^\/+/, ""));
+        if (!file) return new Response("Not Found", { status: 404 });
+        return new Response(file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+      }
+
       return new Response("Not Found", { status: 404 });
     },
     error(e) {

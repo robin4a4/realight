@@ -7,9 +7,11 @@ export type MetaObject = {
   icon: string;
 };
 
-export type Meta<TQueryData extends () => Promise<Record<string, unknown>>> =
-  | ((data: Awaited<ReturnType<TQueryData>>) => MetaObject)
-  | MetaObject;
+export type Meta<
+  TQueryData extends (() => Promise<Record<string, unknown>>) | null = null
+> = TQueryData extends () => Promise<Record<string, unknown>>
+  ? (data: Awaited<ReturnType<TQueryData>>) => MetaObject
+  : MetaObject;
 
 export function Layout({
   children,
@@ -27,7 +29,7 @@ export function Layout({
     <>
       <title>{metaData?.title ?? "My app"}</title>
       <meta name="description" content={metaData?.description} />
-      <link rel="icon" href={metaData?.icon} />
+      <link rel="icon" href={`./public/${metaData?.icon}`} />
     </>
   );
   return (
