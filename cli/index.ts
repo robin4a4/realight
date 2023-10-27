@@ -39,10 +39,10 @@ cli.command("build").action(async () => {
 					`
 			import { Layout } from "realight";
 			import { hydrateRoot } from "react-dom/client";
-			import Page from "../${route}";
+			import Page, {meta} from "../${route}";
 			import "../src/global.css";
-
-			hydrateRoot(document,<Layout data={window.__INITIAL_DATA__} manifest={window.__MANIFEST__}><Page/></Layout>);
+		
+			hydrateRoot(document,<Layout meta={meta} data={window.__INITIAL_DATA__} manifest={window.__MANIFEST__}><Page/></Layout>);
 		`,
 				),
 			);
