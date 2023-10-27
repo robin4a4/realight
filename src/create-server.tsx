@@ -1,14 +1,15 @@
 import { renderToReadableStream } from "react-dom/server";
-import { path } from "../src/routes";
 import { JsonResponse } from "./responses";
 import { Layout } from "./Layout";
 
 const currentDirectory = process.cwd();
 
-export function createServer(
-  routes: { default: Array<ReturnType<typeof path>> },
-  devManifest?: Array<string>
-) {
+const router = new Bun.FileSystemRouter({
+  style: "nextjs",
+  dir: "./src/views",
+});
+
+export function createServer(devManifest?: Array<string>) {
   return Bun.serve({
     port: process.env.PORT || 8080,
     async fetch(req) {
@@ -18,57 +19,62 @@ export function createServer(
       if (manifestExists) manifest = JSON.parse(await manifestFile.text());
       else manifest = devManifest;
       const url = new URL(req.url);
-      for (const route of routes.default) {
-        if (route.path === url.pathname) {
-          const view = route.view;
-          const page: {
-            query: () => Promise<Record<string, unknown>>;
-            mutate: ({
-              req,
-            }: {
-              req: Request;
-            }) => ReturnType<typeof JsonResponse>;
-            default: () => React.ReactNode;
-          } = await import(`${currentDirectory}/src/views/${view}.tsx`);
-          if (req.method === "GET") {
-            const data = await page.query();
-            const PageComponent = page.default;
-            const stream = await renderToReadableStream(
-              <Layout data={data} manifest={manifest}>
-                <PageComponent />
-              </Layout>,
-              {
-                bootstrapScripts: ["/dist/client-framework.js"],
-                bootstrapScriptContent: `
+      const match = router.match(url.pathname);
+      if (match) {
+        const filePath = match.filePath;
+        const filePathInViewsFolder = filePath.split("src/views/")[1];
+
+        const page: {
+          query: () => Promise<Record<string, unknown>>;
+          mutate: ({
+            req,
+          }: {
+            req: Request;
+          }) => ReturnType<typeof JsonResponse>;
+          default: () => React.ReactNode;
+        } = await import(filePath);
+        if (req.method === "GET") {
+          const data = await page.query();
+          const PageComponent = page.default;
+          const stream = await renderToReadableStream(
+            <Layout data={data} manifest={manifest}>
+              <PageComponent />
+            </Layout>,
+            {
+              bootstrapScripts: [
+                `/dist/${filePathInViewsFolder
+                  .replaceAll("/", "-")
+                  .replace(".tsx", ".js")}`,
+              ],
+              bootstrapScriptContent: `
                         window.__INITIAL_DATA__=${JSON.stringify(data)};
                           window.__MANIFEST__=${JSON.stringify(manifest)};`,
-              }
-            );
-            return new Response(stream, {
-              headers: {
-                "Content-Type": "text/html",
-              },
-            });
-          }
-          if (req.method === "POST") {
-            const response = await page.mutate({ req });
-            switch (response.type) {
-              case "json-response": {
-                const data = response.data as Record<string, unknown>;
-                if (response.revalidate) {
-                  // const queryData = await page.query();
-                  const queryData = { title: "New Title", todos: [] };
-                  data.__QUERY_DATA__ = queryData;
-                }
-                return Response.json(data);
-              }
-              default:
-                return new Response("Not Found", { status: 404 });
             }
-          }
-
-          return new Response("Not Found", { status: 404 });
+          );
+          return new Response(stream, {
+            headers: {
+              "Content-Type": "text/html",
+            },
+          });
         }
+        if (req.method === "POST") {
+          const response = await page.mutate({ req });
+          switch (response.type) {
+            case "json-response": {
+              const data = response.data as Record<string, unknown>;
+              if (response.revalidate) {
+                // const queryData = await page.query();
+                const queryData = { title: "New Title", todos: [] };
+                data.__QUERY_DATA__ = queryData;
+              }
+              return Response.json(data);
+            }
+            default:
+              return new Response("Not Found", { status: 404 });
+          }
+        }
+
+        return new Response("Not Found", { status: 404 });
       }
 
       // return dist files

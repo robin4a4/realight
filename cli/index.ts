@@ -1,17 +1,15 @@
 #!/usr/bin/env bun
 import { cac } from "cac";
 import fs from "node:fs";
-import { path } from "../src/routes";
 import { createServer } from "../src/create-server";
-const currentDirectory = process.cwd();
-const routes = await import(`${currentDirectory}/src/routes.ts`);
+import recursive from "recursive-readdir";
 
 const cli = cac("realight");
 
 // Start server
 cli.command("serve").action(async () => {
 	try {
-		const server = createServer(routes);
+		const server = createServer();
 		console.log(`Listening on port ${server.port}`);
 	} catch (e: any) {
 		console.log(`error when starting dev server:\n${e.stack}`);
@@ -22,31 +20,43 @@ cli.command("serve").action(async () => {
 // Build client
 cli.command("build").action(async () => {
 	try {
+		const routes = await recursive("./src/views");
+
 		if (!fs.existsSync("./tmp")) {
 			fs.mkdirSync("./tmp");
 		}
-		routes.default?.forEach(async (route: ReturnType<typeof path>) => {
-			await Bun.write(
-				"./tmp/client-framework.jsx",
-				`
-		import { Layout } from "realight";
-		import { hydrateRoot } from "react-dom/client";
-		import Page from "../src/views/${route.view}.tsx";
-		import "../src/global.css";
-		
-		hydrateRoot(document,<Layout data={window.__INITIAL_DATA__} manifest={window.__MANIFEST__}><Page/></Layout>);
+
+		const writeClientFilePromises: Array<Promise<number>> = [];
+		const filesToBuild: string[] = [];
+		routes.forEach((route) => {
+			const path = `./tmp/${route
+				.replaceAll("/", "-")
+				.replaceAll("src-views", "")
+				.replace("-", "")}`;
+			writeClientFilePromises.push(
+				Bun.write(
+					path,
+					`
+			import { Layout } from "realight";
+			import { hydrateRoot } from "react-dom/client";
+			import Page from "../${route}";
+			import "../src/global.css";
+
+			hydrateRoot(document,<Layout data={window.__INITIAL_DATA__} manifest={window.__MANIFEST__}><Page/></Layout>);
 		`,
+				),
 			);
+			filesToBuild.push(path);
 		});
 
 		console.log("Building...");
 		if (!fs.existsSync("./dist")) {
 			fs.mkdirSync("./dist");
 		}
+		await Promise.all(writeClientFilePromises);
 		const result = await Bun.build({
-			entrypoints: ["./tmp/client-framework.jsx"],
+			entrypoints: filesToBuild,
 			outdir: "./dist",
-			minify: true,
 		});
 		fs.rmSync("./tmp", { recursive: true });
 
