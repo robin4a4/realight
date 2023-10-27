@@ -1,8 +1,6 @@
 import { renderToReadableStream } from "react-dom/server";
 import { JsonResponse } from "./responses";
-import { Layout } from "./Layout";
-
-const currentDirectory = process.cwd();
+import { Layout, Meta } from "./Layout";
 
 const router = new Bun.FileSystemRouter({
   style: "nextjs",
@@ -31,13 +29,16 @@ export function createServer(devManifest?: Array<string>) {
           }: {
             req: Request;
           }) => ReturnType<typeof JsonResponse>;
+          meta?: Meta<() => Promise<Record<string, unknown>>>;
           default: () => React.ReactNode;
         } = await import(filePath);
+
         if (req.method === "GET") {
           const data = await page.query();
           const PageComponent = page.default;
+          const meta = page.meta;
           const stream = await renderToReadableStream(
-            <Layout data={data} manifest={manifest}>
+            <Layout meta={meta} data={data} manifest={manifest}>
               <PageComponent />
             </Layout>,
             {
