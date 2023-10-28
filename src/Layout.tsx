@@ -36,7 +36,7 @@ export function Layout({
     <html lang="en">
       <head>
         {metaTags}
-        {manifest.map((filename) => {
+        {manifest?.map((filename) => {
           if (filename.endsWith(".css")) {
             return (
               <link

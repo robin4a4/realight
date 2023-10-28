@@ -7,21 +7,16 @@ const router = new Bun.FileSystemRouter({
   dir: "./src/views",
 });
 
-export function createServer(devManifest?: Array<string>) {
-  return Bun.serve({
+const port = process.env.PORT || 8080;
+
+export function createServer({ mode }: { mode: "development" | "production" }) {
+  const server = Bun.serve({
     port: process.env.PORT || 8080,
     async fetch(req) {
-      const manifestFile = await Bun.file("dist/manifest.json");
-      const manifestExists = await manifestFile.exists(); // boolean;
-      let manifest = null;
-      if (manifestExists) manifest = JSON.parse(await manifestFile.text());
-      else manifest = devManifest;
       const url = new URL(req.url);
       const match = router.match(url.pathname);
       if (match) {
-        const filePath = match.filePath;
-        const filePathInViewsFolder = filePath.split("src/views/")[1];
-
+        const routeName = match.name.replace(/^\/|\/$/g, "");
         const page: {
           query: () => Promise<Record<string, unknown>>;
           mutate: ({
@@ -31,23 +26,32 @@ export function createServer(devManifest?: Array<string>) {
           }) => ReturnType<typeof JsonResponse>;
           meta?: Meta<() => Promise<Record<string, unknown>>>;
           default: () => React.ReactNode;
-        } = await import(filePath);
+        } = await import(match.filePath);
 
         if (req.method === "GET") {
+          const slug = routeName.replaceAll("/", "-");
+          const manifestFile = await Bun.file(`dist/${slug}/manifest.json`);
+          const manifestExists = await manifestFile.exists(); // boolean;
+          let manifest = null;
+          if (manifestExists) manifest = JSON.parse(await manifestFile.text());
+
           const data = await page.query();
           const PageComponent = page.default;
-          const meta = page.meta;
+
+          const bootstrapScriptPath =
+            mode === "development"
+              ? `http://localhost:3000/${slug}`
+              : `/dist/${slug}/index.js`;
+
           const stream = await renderToReadableStream(
-            <Layout meta={meta} data={data} manifest={manifest}>
+            <Layout data={data} manifest={manifest}>
               <PageComponent />
             </Layout>,
             {
-              bootstrapScripts: [
-                `/dist/${filePathInViewsFolder
-                  .replaceAll("/", "-")
-                  .replace(".tsx", ".js")}`,
-              ],
+              bootstrapScripts: [bootstrapScriptPath],
               bootstrapScriptContent: `
+                window.__REALIGHT_DATA__=${JSON.stringify({ data, manifest })};
+                
                         window.__INITIAL_DATA__=${JSON.stringify(data)};
                           window.__MANIFEST__=${JSON.stringify(manifest)};`,
             }
@@ -74,8 +78,6 @@ export function createServer(devManifest?: Array<string>) {
               return new Response("Not Found", { status: 404 });
           }
         }
-
-        return new Response("Not Found", { status: 404 });
       }
 
       // return dist files
@@ -107,4 +109,6 @@ export function createServer(devManifest?: Array<string>) {
       return new Response("Internal Server Error", { status: 500 });
     },
   });
+  console.log(`[Realight] - Listening on port ${port}`);
+  return server;
 }
