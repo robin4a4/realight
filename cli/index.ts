@@ -48,10 +48,11 @@ cli.command("dev").action(async () => {
 					`
 			import { Layout, clientLiveReload } from "realight";
 			import { hydrateRoot } from "react-dom/client";
-			import Page from "${currentWorkingDirectory}/${route}";
+			import Page, {meta} from "${currentWorkingDirectory}/${route}";
 			import "${currentWorkingDirectory}/src/global.css";
 	
-			hydrateRoot(document,<Layout data={window.__INITIAL_DATA__}><Page/></Layout>);
+			const realightData = window.__REALIGHT_DATA__
+			hydrateRoot(document,<Layout data={realightData.data}><Page/></Layout>);
 
 			clientLiveReload();
 		  `,
@@ -69,10 +70,11 @@ cli.command("dev").action(async () => {
 					entrypoints: [`${dirTemp}/index.jsx`],
 					outdir: dirDist, // can't dot an in memory build (see: https://github.com/oven-sh/bun/issues/3064)
 				});
+				console.log(result);
 				buildResult.push(result.outputs);
 			}
 
-			fs.rmSync("./tmp", { recursive: true });
+			// fs.rmSync("./tmp", { recursive: true });
 
 			return async (req: Request) => {
 				const url = new URL(req.url);
@@ -172,8 +174,8 @@ cli.command("build").action(async () => {
 				import { hydrateRoot } from "react-dom/client";
 				import Page from "${currentWorkingDirectory}/${route}";
 				import "${currentWorkingDirectory}/src/global.css";
-		
-				hydrateRoot(document,<Layout data={window.__INITIAL_DATA__}><Page/></Layout>);
+				const realightData = window.__REALIGHT_DATA__
+				hydrateRoot(document,<Layout data={realightData.data} manifest={realightData.manifest}><Page/></Layout>);
 			  `,
 			);
 			const dirDist = `./dist/${slug}`;

@@ -49,11 +49,9 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
             </Layout>,
             {
               bootstrapScripts: [bootstrapScriptPath],
-              bootstrapScriptContent: `
-                window.__REALIGHT_DATA__=${JSON.stringify({ data, manifest })};
-                
-                        window.__INITIAL_DATA__=${JSON.stringify(data)};
-                          window.__MANIFEST__=${JSON.stringify(manifest)};`,
+              bootstrapScriptContent: `window.__REALIGHT_DATA__=${JSON.stringify(
+                { data, manifest }
+              )};`,
             }
           );
           return new Response(stream, {
