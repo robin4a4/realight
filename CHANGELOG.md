@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.20
+
+### Patch Changes
+
+- fc5e56d: add live reload and correct statics file loading mechanism
+
 ## 0.0.19
 
 ### Patch Changes
