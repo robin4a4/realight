@@ -48,8 +48,8 @@ cli.command("dev").action(async () => {
 					`
 			import { Layout, clientLiveReload } from "realight";
 			import { hydrateRoot } from "react-dom/client";
-			import Page, {meta} from "${currentWorkingDirectory}/${route}";
-			import "${currentWorkingDirectory}/src/global.css";
+			import Page, {meta} from "../../${route}";
+			import "../../src/global.css";
 	
 			const realightData = window.__REALIGHT_DATA__
 			hydrateRoot(document,<Layout meta={meta} data={realightData.data}><Page/></Layout>);
@@ -172,8 +172,8 @@ cli.command("build").action(async () => {
 				`
 				import { Layout } from "realight";
 				import { hydrateRoot } from "react-dom/client";
-				import Page, {meta} from "${currentWorkingDirectory}/${route}";
-				import "${currentWorkingDirectory}/src/global.css";
+				import Page, {meta} from "../../${route}";
+				import "../../src/global.css";
 				const realightData = window.__REALIGHT_DATA__
 				hydrateRoot(document,<Layout meta={meta} data={realightData.data} manifest={realightData.manifest}><Page/></Layout>);
 			  `,
