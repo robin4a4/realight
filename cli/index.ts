@@ -172,10 +172,10 @@ cli.command("build").action(async () => {
 				`
 				import { Layout } from "realight";
 				import { hydrateRoot } from "react-dom/client";
-				import Page from "${currentWorkingDirectory}/${route}";
+				import Page, {meta} from "${currentWorkingDirectory}/${route}";
 				import "${currentWorkingDirectory}/src/global.css";
 				const realightData = window.__REALIGHT_DATA__
-				hydrateRoot(document,<Layout data={realightData.data} manifest={realightData.manifest}><Page/></Layout>);
+				hydrateRoot(document,<Layout meta={meta} data={realightData.data} manifest={realightData.manifest}><Page/></Layout>);
 			  `,
 			);
 			const dirDist = `./dist/${slug}`;

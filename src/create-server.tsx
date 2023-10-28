@@ -37,14 +37,14 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 
           const data = await page.query();
           const PageComponent = page.default;
-
+          const meta = page.meta;
           const bootstrapScriptPath =
             mode === "development"
               ? `http://localhost:3000/${slug}`
               : `/dist/${slug}/index.js`;
 
           const stream = await renderToReadableStream(
-            <Layout data={data} manifest={manifest}>
+            <Layout meta={meta} data={data} manifest={manifest}>
               <PageComponent />
             </Layout>,
             {
