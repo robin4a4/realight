@@ -52,7 +52,7 @@ cli.command("dev").action(async () => {
 			import "${currentWorkingDirectory}/src/global.css";
 	
 			const realightData = window.__REALIGHT_DATA__
-			hydrateRoot(document,<Layout data={realightData.data}><Page/></Layout>);
+			hydrateRoot(document,<Layout meta={meta} data={realightData.data}><Page/></Layout>);
 
 			clientLiveReload();
 		  `,
