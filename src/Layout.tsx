@@ -1,17 +1,6 @@
 import { MutationProvider } from "./mutation-data-context";
 import { QueryProvider } from "./query-data-context";
-
-export type MetaObject = {
-  title: string;
-  description: string;
-  icon: string;
-};
-
-export type Meta<
-  TQueryData extends (() => Promise<Record<string, unknown>>) | null = null
-> = TQueryData extends () => Promise<Record<string, unknown>>
-  ? (data: Awaited<ReturnType<TQueryData>>) => MetaObject
-  : MetaObject;
+import type { Meta } from "./types";
 
 export function Layout({
   children,

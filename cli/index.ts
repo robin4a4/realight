@@ -51,7 +51,7 @@ cli.command("dev").action(async () => {
 			import "../../src/global.css";
 	
 			const realightData = window.__REALIGHT_DATA__
-			hydrateRoot(document,<Layout meta={meta} data={realightData.data}><View params={realightData.params}/></Layout>);
+			hydrateRoot(document,<Layout meta={meta} data={realightData.data}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
 
 			clientLiveReload();
 		  `,
@@ -72,7 +72,7 @@ cli.command("dev").action(async () => {
 				buildResult.push(result.outputs);
 			}
 
-			// fs.rmSync("./tmp", { recursive: true });
+			fs.rmSync("./tmp", { recursive: true });
 
 			return async (req: Request) => {
 				const url = new URL(req.url);
@@ -171,7 +171,7 @@ cli.command("build").action(async () => {
 				import View, {meta} from "../../${route}";
 				import "../../src/global.css";
 				const realightData = window.__REALIGHT_DATA__
-				hydrateRoot(document,<Layout meta={meta} data={realightData.data} manifest={realightData.manifest}><View params={realightData.params}/></Layout>);
+				hydrateRoot(document,<Layout meta={meta} data={realightData.data} manifest={realightData.manifest}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
 			  `,
 			);
 			const dirDist = `./dist/${slug}`;

@@ -1,6 +1,7 @@
 import { renderToReadableStream } from "react-dom/server";
 import { JsonResponse } from "./responses";
-import { Layout, Meta } from "./Layout";
+import { Layout } from "./Layout";
+import type { Meta, Params, ViewProps } from "./types";
 
 const router = new Bun.FileSystemRouter({
   style: "nextjs",
@@ -9,13 +10,6 @@ const router = new Bun.FileSystemRouter({
 
 const port = process.env.PORT || 8080;
 
-type Params = {
-  [key: string]: string | string[] | undefined;
-};
-
-export type ViewProps = {
-  params?: Params;
-};
 export function createServer({ mode }: { mode: "development" | "production" }) {
   const server = Bun.serve({
     port: process.env.PORT || 8080,
@@ -26,16 +20,20 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
         const view: {
           query: ({
             req,
+            searchParams,
             params,
           }: {
             req: Request;
-            params: Params;
+            searchParams?: URLSearchParams;
+            params?: Params;
           }) => Promise<Record<string, unknown>>;
           mutate: ({
             req,
+            searchParams,
             params,
           }: {
             req: Request;
+            searchParams?: URLSearchParams;
             params?: Params;
           }) => ReturnType<typeof JsonResponse>;
           meta?: Meta<() => Promise<Record<string, unknown>>>;
@@ -59,7 +57,10 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 
           const stream = await renderToReadableStream(
             <Layout meta={meta} data={data} manifest={manifest}>
-              <ViewComponent params={match.params} />
+              <ViewComponent
+                searchParams={new URLSearchParams(match.query)}
+                params={match.params}
+              />
             </Layout>,
             {
               bootstrapScripts: [bootstrapScriptPath],
@@ -67,6 +68,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
               window.__REALIGHT_DATA__=${JSON.stringify({
                 data,
                 manifest,
+                searchParams: match.query,
                 params: match.params,
               })};`,
             }
