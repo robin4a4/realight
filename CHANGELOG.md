@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.25
+
+### Patch Changes
+
+- 73e54d5: add params
+
 ## 0.0.24
 
 ### Patch Changes
