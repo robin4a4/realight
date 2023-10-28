@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.23
+
+### Patch Changes
+
+- f0f74f6: fix meta 2
+
 ## 0.0.22
 
 ### Patch Changes
