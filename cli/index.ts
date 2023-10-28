@@ -6,7 +6,6 @@ import recursive from "recursive-readdir";
 import { createWebSocketServer } from "../src/dev-tools/createWebsocketServer";
 import { BuildArtifact } from "bun";
 const port = 3000;
-const currentWorkingDirectory = process.cwd();
 
 const cli = cac("realight");
 
@@ -48,11 +47,11 @@ cli.command("dev").action(async () => {
 					`
 			import { Layout, clientLiveReload } from "realight";
 			import { hydrateRoot } from "react-dom/client";
-			import Page, {meta} from "../../${route}";
+			import View, {meta} from "../../${route}";
 			import "../../src/global.css";
 	
 			const realightData = window.__REALIGHT_DATA__
-			hydrateRoot(document,<Layout meta={meta} data={realightData.data}><Page/></Layout>);
+			hydrateRoot(document,<Layout meta={meta} data={realightData.data}><View params={realightData.params}/></Layout>);
 
 			clientLiveReload();
 		  `,
@@ -70,7 +69,6 @@ cli.command("dev").action(async () => {
 					entrypoints: [`${dirTemp}/index.jsx`],
 					outdir: dirDist, // can't dot an in memory build (see: https://github.com/oven-sh/bun/issues/3064)
 				});
-				console.log(result);
 				buildResult.push(result.outputs);
 			}
 
@@ -154,8 +152,6 @@ cli.command("build").action(async () => {
 		if (!fs.existsSync("./tmp")) {
 			fs.mkdirSync("./tmp");
 		}
-		console.log("client...");
-		const currentWorkingDirectory = process.cwd();
 
 		for await (const route of routes) {
 			const slug = route
@@ -172,10 +168,10 @@ cli.command("build").action(async () => {
 				`
 				import { Layout } from "realight";
 				import { hydrateRoot } from "react-dom/client";
-				import Page, {meta} from "../../${route}";
+				import View, {meta} from "../../${route}";
 				import "../../src/global.css";
 				const realightData = window.__REALIGHT_DATA__
-				hydrateRoot(document,<Layout meta={meta} data={realightData.data} manifest={realightData.manifest}><Page/></Layout>);
+				hydrateRoot(document,<Layout meta={meta} data={realightData.data} manifest={realightData.manifest}><View params={realightData.params}/></Layout>);
 			  `,
 			);
 			const dirDist = `./dist/${slug}`;
@@ -194,7 +190,6 @@ cli.command("build").action(async () => {
 			const manifest = result.outputs.map((output) => {
 				return output.path.split("dist/").pop();
 			}) as string[];
-			console.log(manifest);
 			Bun.write(`${dirDist}/manifest.json`, JSON.stringify(manifest));
 		}
 

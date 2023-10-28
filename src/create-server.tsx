@@ -9,23 +9,37 @@ const router = new Bun.FileSystemRouter({
 
 const port = process.env.PORT || 8080;
 
+type Params = {
+  [key: string]: string | string[] | undefined;
+};
+
+export type ViewProps = {
+  params?: Params;
+};
 export function createServer({ mode }: { mode: "development" | "production" }) {
   const server = Bun.serve({
     port: process.env.PORT || 8080,
     async fetch(req) {
-      const url = new URL(req.url);
-      const match = router.match(url.pathname);
+      const match = router.match(req.url);
       if (match) {
         const routeName = match.name.replace(/^\/|\/$/g, "");
-        const page: {
-          query: () => Promise<Record<string, unknown>>;
-          mutate: ({
+        const view: {
+          query: ({
             req,
+            params,
           }: {
             req: Request;
+            params: Params;
+          }) => Promise<Record<string, unknown>>;
+          mutate: ({
+            req,
+            params,
+          }: {
+            req: Request;
+            params?: Params;
           }) => ReturnType<typeof JsonResponse>;
           meta?: Meta<() => Promise<Record<string, unknown>>>;
-          default: () => React.ReactNode;
+          default: (viewProps?: ViewProps) => React.ReactNode;
         } = await import(match.filePath);
 
         if (req.method === "GET") {
@@ -35,9 +49,9 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
           let manifest = null;
           if (manifestExists) manifest = JSON.parse(await manifestFile.text());
 
-          const data = await page.query();
-          const PageComponent = page.default;
-          const meta = page.meta;
+          const data = await view.query({ req, params: match.params });
+          const ViewComponent = view.default;
+          const meta = view.meta;
           const bootstrapScriptPath =
             mode === "development"
               ? `http://localhost:3000/${slug}`
@@ -45,13 +59,16 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 
           const stream = await renderToReadableStream(
             <Layout meta={meta} data={data} manifest={manifest}>
-              <PageComponent />
+              <ViewComponent params={match.params} />
             </Layout>,
             {
               bootstrapScripts: [bootstrapScriptPath],
-              bootstrapScriptContent: `window.__REALIGHT_DATA__=${JSON.stringify(
-                { data, manifest }
-              )};`,
+              bootstrapScriptContent: `
+              window.__REALIGHT_DATA__=${JSON.stringify({
+                data,
+                manifest,
+                params: match.params,
+              })};`,
             }
           );
           return new Response(stream, {
@@ -61,13 +78,15 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
           });
         }
         if (req.method === "POST") {
-          const response = await page.mutate({ req });
+          const response = await view.mutate({ req, params: match.params });
           switch (response.type) {
             case "json-response": {
               const data = response.data as Record<string, unknown>;
               if (response.revalidate) {
-                // const queryData = await page.query();
-                const queryData = { title: "New Title", todos: [] };
+                const queryData = await view.query({
+                  req,
+                  params: match.params,
+                });
                 data.__QUERY_DATA__ = queryData;
               }
               return Response.json(data);
@@ -79,6 +98,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
       }
 
       // return dist files
+      const url = new URL(req.url);
       if (url.pathname.startsWith("/dist")) {
         const file = Bun.file(url.pathname.replace(/^\/+/, ""));
         if (!file) return new Response("Not Found", { status: 404 });
