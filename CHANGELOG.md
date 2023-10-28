@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.26
+
+### Patch Changes
+
+- 05094d5: searchParams
+
 ## 0.0.25
 
 ### Patch Changes
