@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.30
+
+### Patch Changes
+
+- 911f60a: try adding index
+
 ## 0.0.29
 
 ### Patch Changes
