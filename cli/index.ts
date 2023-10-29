@@ -79,23 +79,23 @@ cli.command("dev").action(async () => {
 			return async (req: Request) => {
 				const url = new URL(req.url);
 
-				for (const [index, route] of routes.entries()) {
+				for (const [routeIndex, route] of routes.entries()) {
 					const slug = route
 						.replaceAll("src/views/", "")
 						.replaceAll(".tsx", "")
 						.replaceAll("/", "-");
 					if (url.pathname === `/${slug}`) {
-						const buildOutput = buildResult[index];
+						const buildOutput = buildResult[routeIndex];
 						let cssAppendSnippet = "";
 						let jsFiles = "";
-						for (const [i, output] of buildOutput.entries()) {
+						for (const [outputIndex, output] of buildOutput.entries()) {
 							if (output.type === "text/css") {
 								const cssPath = output.path.split("dist/").pop();
 								cssAppendSnippet += `
-							const link_${i} = document.createElement('link');
-							link_${i}.setAttribute('rel', 'stylesheet');
-							link_${i}.setAttribute('href', 'http://localhost:${port}/${cssPath}');
-							document.head.appendChild(link_${i});`;
+							const link_${outputIndex}_${routeIndex} = document.createElement('link');
+							link_${outputIndex}_${routeIndex}.setAttribute('rel', 'stylesheet');
+							link_${outputIndex}_${routeIndex}.setAttribute('href', 'http://localhost:${port}/${cssPath}');
+							document.head.appendChild(link_${outputIndex}_${routeIndex});`;
 							}
 							if (output.type.startsWith("text/javascript")) {
 								jsFiles = await output.text();

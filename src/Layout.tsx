@@ -18,7 +18,9 @@ export function Layout({
     <>
       <title>{metaData?.title ?? "My app"}</title>
       <meta name="description" content={metaData?.description} />
-      <link rel="icon" href={`./public/${metaData?.icon}`} />
+      {metaData?.icon ? (
+        <link rel="icon" href={`./public/${metaData?.icon}`} />
+      ) : null}
     </>
   );
   return (
