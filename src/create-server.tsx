@@ -1,7 +1,6 @@
 import { renderToReadableStream } from "react-dom/server";
-import { JsonResponse } from "./responses";
 import { Layout } from "./Layout";
-import type { Meta, Params, ViewModuleType, ViewProps } from "./types";
+import type { ViewModuleType } from "./types";
 
 const router = new Bun.FileSystemRouter({
   style: "nextjs",
@@ -30,7 +29,10 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
             ? await view.query({ req, params: match.params })
             : null;
           const ViewComponent = view.default;
+
           const meta = view.meta;
+          const metaData = typeof meta === "function" ? meta(data) : meta;
+
           const bootstrapScriptPath =
             mode === "development"
               ? `http://localhost:3000/${slug}`
@@ -48,6 +50,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
               bootstrapScriptContent: `
               window.__REALIGHT_DATA__=${JSON.stringify({
                 data,
+                meta: metaData,
                 manifest,
                 searchParams: match.query,
                 params: match.params,
