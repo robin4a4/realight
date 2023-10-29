@@ -1,3 +1,10 @@
+import { JsonResponse } from "./responses";
+
+export type QueryDefaultType =
+	| Record<string, unknown>
+	| Record<string, unknown>[]
+	| null;
+
 export type Params = {
 	[key: string]: string | string[] | undefined;
 };
@@ -14,7 +21,30 @@ export type MetaObject = {
 };
 
 export type Meta<
-	TQueryData extends (() => Promise<Record<string, unknown>>) | null = null,
-> = TQueryData extends () => Promise<Record<string, unknown>>
+	TQueryData extends (() => Promise<QueryDefaultType>) | null = null,
+> = TQueryData extends () => Promise<QueryDefaultType>
 	? (data: Awaited<ReturnType<TQueryData>>) => MetaObject
 	: MetaObject;
+
+export type ViewModuleType = {
+	query?: ({
+		req,
+		searchParams,
+		params,
+	}: {
+		req: Request;
+		searchParams?: URLSearchParams;
+		params?: Params;
+	}) => Promise<QueryDefaultType>;
+	mutate?: ({
+		req,
+		searchParams,
+		params,
+	}: {
+		req: Request;
+		searchParams?: URLSearchParams;
+		params?: Params;
+	}) => ReturnType<typeof JsonResponse>;
+	meta?: Meta<() => Promise<QueryDefaultType>>;
+	default: (viewProps?: ViewProps) => React.ReactNode;
+};

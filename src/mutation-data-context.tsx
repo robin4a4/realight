@@ -5,16 +5,16 @@ import {
   useContext,
   useState,
 } from "react";
+import type { QueryDefaultType } from "./types";
 
 export const MutationContext = createContext<{
-  currentMutationData: Record<string, unknown>;
-  setCurrentMutationData: Dispatch<SetStateAction<Record<string, unknown>>>;
+  currentMutationData: QueryDefaultType;
+  setCurrentMutationData: Dispatch<SetStateAction<QueryDefaultType>>;
 } | null>(null);
 
 export function MutationProvider({ children }: { children: React.ReactNode }) {
-  const [currentMutationData, setCurrentMutationData] = useState<
-    Record<string, unknown>
-  >({});
+  const [currentMutationData, setCurrentMutationData] =
+    useState<QueryDefaultType>({});
   return (
     <MutationContext.Provider
       value={{

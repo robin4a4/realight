@@ -47,11 +47,13 @@ cli.command("dev").action(async () => {
 					`
 			import { Layout, clientLiveReload } from "realight";
 			import { hydrateRoot } from "react-dom/client";
-			import View, {meta} from "../../${route}";
+			import View from "../../${route}";
 			import "../../src/global.css";
-	
+			import listen from 'micromorph/nav';
+
+			listen();
 			const realightData = window.__REALIGHT_DATA__
-			hydrateRoot(document,<Layout meta={meta} data={realightData.data}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
+			hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
 
 			clientLiveReload();
 		  `,
@@ -168,10 +170,13 @@ cli.command("build").action(async () => {
 				`
 				import { Layout } from "realight";
 				import { hydrateRoot } from "react-dom/client";
-				import View, {meta} from "../../${route}";
+				import View from "../../${route}";
 				import "../../src/global.css";
+				import listen from 'micromorph/nav';
+			
+				listen();	
 				const realightData = window.__REALIGHT_DATA__
-				hydrateRoot(document,<Layout meta={meta} data={realightData.data} manifest={realightData.manifest}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
+				hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data} manifest={realightData.manifest}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
 			  `,
 			);
 			const dirDist = `./dist/${slug}`;

@@ -1,4 +1,6 @@
-export function JsonResponse<TData = Record<string, unknown>>(
+import type { QueryDefaultType } from "./types";
+
+export function JsonResponse<TData = QueryDefaultType>(
 	data: TData,
 	options: { revalidate?: boolean } = {},
 ) {

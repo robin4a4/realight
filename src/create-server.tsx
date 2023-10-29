@@ -1,7 +1,7 @@
 import { renderToReadableStream } from "react-dom/server";
 import { JsonResponse } from "./responses";
 import { Layout } from "./Layout";
-import type { Meta, Params, ViewProps } from "./types";
+import type { Meta, Params, ViewModuleType, ViewProps } from "./types";
 
 const router = new Bun.FileSystemRouter({
   style: "nextjs",
@@ -17,28 +17,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
       const match = router.match(req.url);
       if (match) {
         const routeName = match.name.replace(/^\/|\/$/g, "");
-        const view: {
-          query: ({
-            req,
-            searchParams,
-            params,
-          }: {
-            req: Request;
-            searchParams?: URLSearchParams;
-            params?: Params;
-          }) => Promise<Record<string, unknown>>;
-          mutate: ({
-            req,
-            searchParams,
-            params,
-          }: {
-            req: Request;
-            searchParams?: URLSearchParams;
-            params?: Params;
-          }) => ReturnType<typeof JsonResponse>;
-          meta?: Meta<() => Promise<Record<string, unknown>>>;
-          default: (viewProps?: ViewProps) => React.ReactNode;
-        } = await import(match.filePath);
+        const view: ViewModuleType = await import(match.filePath);
 
         if (req.method === "GET") {
           const slug = routeName.replaceAll("/", "-");
@@ -47,7 +26,9 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
           let manifest = null;
           if (manifestExists) manifest = JSON.parse(await manifestFile.text());
 
-          const data = await view.query({ req, params: match.params });
+          const data = view.query
+            ? await view.query({ req, params: match.params })
+            : null;
           const ViewComponent = view.default;
           const meta = view.meta;
           const bootstrapScriptPath =
@@ -80,15 +61,19 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
           });
         }
         if (req.method === "POST") {
-          const response = await view.mutate({ req, params: match.params });
-          switch (response.type) {
+          const response = view.mutate
+            ? await view.mutate({ req, params: match.params })
+            : null;
+          switch (response?.type) {
             case "json-response": {
               const data = response.data as Record<string, unknown>;
               if (response.revalidate) {
-                const queryData = await view.query({
-                  req,
-                  params: match.params,
-                });
+                const queryData = view.query
+                  ? await view.query({
+                      req,
+                      params: match.params,
+                    })
+                  : null;
                 data.__QUERY_DATA__ = queryData;
               }
               return Response.json(data);

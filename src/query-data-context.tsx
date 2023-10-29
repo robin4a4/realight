@@ -5,17 +5,18 @@ import {
   useContext,
   useState,
 } from "react";
+import type { QueryDefaultType } from "./types";
 
 export const QueryContext = createContext<{
-  currentQueryData: Record<string, unknown>;
-  setCurrentQueryData: Dispatch<SetStateAction<Record<string, unknown>>>;
+  currentQueryData: QueryDefaultType;
+  setCurrentQueryData: Dispatch<SetStateAction<QueryDefaultType>>;
 } | null>(null);
 
 export function QueryProvider({
   initialData,
   children,
 }: {
-  initialData: Record<string, unknown>;
+  initialData: QueryDefaultType;
   children: React.ReactNode;
 }) {
   const [currentQueryData, setCurrentQueryData] = useState(initialData);

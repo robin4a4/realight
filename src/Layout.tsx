@@ -1,6 +1,6 @@
 import { MutationProvider } from "./mutation-data-context";
 import { QueryProvider } from "./query-data-context";
-import type { Meta } from "./types";
+import type { Meta, QueryDefaultType } from "./types";
 
 export function Layout({
   children,
@@ -9,8 +9,8 @@ export function Layout({
   manifest,
 }: {
   children: React.ReactNode;
-  data: Record<string, unknown>;
-  meta?: Meta<() => Promise<Record<string, unknown>>>;
+  data: QueryDefaultType;
+  meta?: Meta<() => Promise<QueryDefaultType>>;
   manifest: string[];
 }) {
   const metaData = typeof meta === "function" ? meta(data) : meta;
