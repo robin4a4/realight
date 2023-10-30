@@ -1,9 +1,7 @@
 import Database from "bun:sqlite";
 
-const db: { db: Database | null } = { db: null };
+export let db: Database | null = null;
 if (typeof document === "undefined") {
 	const { Database } = await import("bun:sqlite");
-	db.db = new Database("./data/mydb.sqlite", { create: true });
+	db = new Database("./data/mydb.sqlite", { create: true });
 }
-
-export default db;
