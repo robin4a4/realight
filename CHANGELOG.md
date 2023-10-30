@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.35
+
+### Patch Changes
+
+- 70da72e: try js for db
+
 ## 0.0.34
 
 ### Patch Changes
