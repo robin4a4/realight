@@ -52,7 +52,6 @@ cli.command("dev").action(async () => {
 
 			const realightData = window.__REALIGHT_DATA__
 			hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
-					<script async src="localhost">
 			clientLiveReload();
 		  `,
 				);
