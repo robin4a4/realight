@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.39
+
+### Patch Changes
+
+- 70f3886: try jsdoc
+
 ## 0.0.38
 
 ### Patch Changes
