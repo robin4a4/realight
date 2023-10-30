@@ -102,6 +102,7 @@ cli.command("dev").action(async () => {
 						}
 						return new Response(jsFiles + cssAppendSnippet, {
 							headers: {
+								"Access-Control-Allow-Origin": "*",
 								"content-type": "text/javascript;charset=utf-8",
 							},
 						});
@@ -115,6 +116,7 @@ cli.command("dev").action(async () => {
 							const text = await output.text();
 							return new Response(text, {
 								headers: {
+									"Access-Control-Allow-Origin": "*",
 									"content-type": output.type,
 								},
 							});
