@@ -12,7 +12,7 @@ Can only be used for toy projects and is really far from being production ready 
 
 ### You first route
 
-Realight is a based on the file system router that Bun provides which is itself based on the Nextjs Page router.
+Realight is based on the file system router that Bun provides which is itself based on the Nextjs Page router.
 
 First create a `view` folder which will contain all the routes, then create a `home.tsx` file. It will create the `/home` url.
  
@@ -219,3 +219,8 @@ export const meta: Meta<typeof query> = (data) => {
     icon: "favicon.png"
 }
 ```
+
+
+### Database
+
+If you want to store data in a database you can use the `realight/db` package that exposes a bun sqlite database. You can also use the native bun sqlite db but you'll have to import it dynamically in either the query or mutate function. Using the `realight/db` you'll be able to import it from the top.
