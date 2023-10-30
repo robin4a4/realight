@@ -8,8 +8,8 @@
   "exports": {
     ".": "./dist/index.js",
     "./db": {
-      "types": "./db/index.d.ts",
-      "import": "./db/index.js"
+      "types": "./db.d.ts",
+      "import": "./db.js"
     },
     "./package.json": "./package.json"
   },
