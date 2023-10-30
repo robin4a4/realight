@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.32
+
+### Patch Changes
+
+- d549c3d: add middleware and db
+
 ## 0.0.31
 
 ### Patch Changes
