@@ -30,8 +30,7 @@
   ],
   "files": [
     "dist/",
-    "db.js",
-    "db.d.ts"
+    "db.js"
   ],
   "devDependencies": {
     "@biomejs/biome": "1.3.1",
