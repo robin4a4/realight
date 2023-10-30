@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.41
+
+### Patch Changes
+
+- eb83175: remove
+
 ## 0.0.40
 
 ### Patch Changes
