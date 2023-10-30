@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.36
+
+### Patch Changes
+
+- 3f8993a: fix
+
 ## 0.0.35
 
 ### Patch Changes
