@@ -49,12 +49,10 @@ cli.command("dev").action(async () => {
 			import { hydrateRoot } from "react-dom/client";
 			import View from "../../${route}";
 			import "../../src/global.css";
-			import listen from 'micromorph/nav';
 
-			listen();
 			const realightData = window.__REALIGHT_DATA__
 			hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
-
+					<script async src="localhost">
 			clientLiveReload();
 		  `,
 				);
@@ -172,9 +170,6 @@ cli.command("build").action(async () => {
 				import { hydrateRoot } from "react-dom/client";
 				import View from "../../${route}";
 				import "../../src/global.css";
-				import listen from 'micromorph/nav';
-			
-				listen();	
 				const realightData = window.__REALIGHT_DATA__
 				hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data} manifest={realightData.manifest}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
 			  `,
