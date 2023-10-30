@@ -9,6 +9,19 @@ const router = new Bun.FileSystemRouter({
 
 const port = process.env.PORT || 8080;
 
+const middlewaresFile = await Bun.file("src/middlewares.ts");
+const middlewaresExists = await middlewaresFile.exists();
+
+if (middlewaresExists) {
+  const middlewareModule = (await import(
+    `${process.cwd()}/src/middlewares.ts`
+  )) as { middlewares: Array<() => void> };
+
+  for (const middlewareFn of middlewareModule.middlewares) {
+    middlewareFn();
+  }
+}
+
 export function createServer({ mode }: { mode: "development" | "production" }) {
   const server = Bun.serve({
     port: process.env.PORT || 8080,
@@ -46,7 +59,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
               />
             </Layout>,
             {
-              bootstrapScripts: [bootstrapScriptPath],
+              bootstrapModules: [bootstrapScriptPath],
               bootstrapScriptContent: `
               window.__REALIGHT_DATA__=${JSON.stringify({
                 data,

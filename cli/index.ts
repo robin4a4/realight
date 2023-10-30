@@ -68,6 +68,7 @@ cli.command("dev").action(async () => {
 				const result = await Bun.build({
 					entrypoints: [`${dirTemp}/index.jsx`],
 					outdir: dirDist, // can't dot an in memory build (see: https://github.com/oven-sh/bun/issues/3064)
+					external: ["bun:sqlite"],
 				});
 				buildResult.push(result.outputs);
 			}
@@ -186,6 +187,7 @@ cli.command("build").action(async () => {
 			const result = await Bun.build({
 				entrypoints: [`${dirTemp}/index.jsx`],
 				outdir: dirDist, // can't dot an in memory build (see: https://github.com/oven-sh/bun/issues/3064)
+				external: ["bun:sqlite"],
 			});
 			const manifest = result.outputs.map((output) => {
 				return output.path.split("dist/").pop();
