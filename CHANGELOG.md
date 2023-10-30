@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.31
+
+### Patch Changes
+
+- 87447a0: remove micromorph
+
 ## 0.0.30
 
 ### Patch Changes
