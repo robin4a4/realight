@@ -1,5 +1,11 @@
 # realight
 
+## 0.0.40
+
+### Patch Changes
+
+- 710d61a: test
+
 ## 0.0.39
 
 ### Patch Changes
