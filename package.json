@@ -7,6 +7,10 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
+    "./db": {
+      "types": "./db/index.d.ts",
+      "import": "./db/index.js"
+    },
     "./package.json": "./package.json"
   },
   "bin": {
@@ -28,7 +32,9 @@
     "server"
   ],
   "files": [
-    "dist/"
+    "dist/",
+    "db.js",
+    "db.d.ts"
   ],
   "devDependencies": {
     "@biomejs/biome": "1.3.1",
