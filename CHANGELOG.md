@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.4
+
+### Patch Changes
+
+- 5208cf4: support index files
+
 ## 0.1.3
 
 ### Patch Changes
