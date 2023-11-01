@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.1
+
+### Patch Changes
+
+- e70a9f3: create data dir if it does not exists
+
 ## 0.1.0
 
 ### Minor Changes
