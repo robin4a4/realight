@@ -50,15 +50,17 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 						mode === "development"
 							? `http://localhost:3000/${slug}`
 							: `/dist/${slug}/index.js`;
-					console.log("meta: ", meta);
-					console.log("data: ", data);
-					console.log("manifest: ", manifest);
-					console.log("match query: ", match.query);
-					console.log("ViewComponent: ", ViewComponent);
-					console.log("renderToReadableStream: ", renderToReadableStream);
-					const stream = await renderToReadableStream(<div>test</div>, {
-						bootstrapModules: [bootstrapScriptPath],
-						bootstrapScriptContent: `
+
+					const stream = await renderToReadableStream(
+						<Layout meta={meta} data={data} manifest={manifest}>
+							<ViewComponent
+								searchParams={new URLSearchParams(match.query)}
+								params={match.params}
+							/>
+						</Layout>,
+						{
+							bootstrapModules: [bootstrapScriptPath],
+							bootstrapScriptContent: `
               window.__REALIGHT_DATA__=${JSON.stringify({
 								data,
 								meta: metaData,
@@ -66,7 +68,8 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 								searchParams: match.query,
 								params: match.params,
 							})};`,
-					});
+						},
+					);
 					return new Response(stream, {
 						headers: {
 							"Content-Type": "text/html",
