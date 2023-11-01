@@ -81,7 +81,8 @@ cli.command("dev").action(async () => {
 					const slug = route
 						.replaceAll("src/views/", "")
 						.replaceAll(".tsx", "")
-						.replaceAll("/", "-");
+						.replaceAll("/", "-")
+						.replaceAll("index", "");
 					if (url.pathname === `/${slug}`) {
 						const buildOutput = buildResult[routeIndex];
 						let cssAppendSnippet = "";
