@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.2
+
+### Patch Changes
+
+- 8f62fac: test
+
 ## 0.1.1
 
 ### Patch Changes
