@@ -23,6 +23,8 @@ cli.command("serve").action(async () => {
 // Dev server
 cli.command("dev").action(async () => {
 	try {
+		await createServer({ mode: "development" });
+
 		async function createStaticFilesAndFetchServerFunction() {
 			const buildResult: Array<BuildArtifact[]> = [];
 			const routes = await recursive("./src/views");
@@ -128,11 +130,11 @@ cli.command("dev").action(async () => {
 
 		const fetchServerFunction = await createStaticFilesAndFetchServerFunction();
 		const devServer = Bun.serve({ port, fetch: fetchServerFunction });
+
 		fs.watch("./src", { recursive: true }, async (event, filename) => {
 			const fetchServerFunction =
 				await createStaticFilesAndFetchServerFunction();
 			devServer.reload({ fetch: fetchServerFunction });
-
 			for (const socket of sockets) {
 				socket.send("refresh");
 			}
