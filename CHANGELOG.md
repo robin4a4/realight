@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.10
+
+### Patch Changes
+
+- 4c2ec3f: add server
+
 ## 0.1.9
 
 ### Patch Changes
