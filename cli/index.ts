@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { cac } from "cac";
 import fs from "node:fs";
-import { createServer } from "../src/create-server";
+import { createServer, fetchFunction } from "../src/create-server";
 import recursive from "recursive-readdir";
 import { createWebSocketServer } from "../src/dev-tools/createWebsocketServer";
 import { BuildArtifact } from "bun";
@@ -23,8 +23,6 @@ cli.command("serve").action(async () => {
 // Dev server
 cli.command("dev").action(async () => {
 	try {
-		await createServer({ mode: "development" });
-
 		async function createStaticFilesAndFetchServerFunction() {
 			const buildResult: Array<BuildArtifact[]> = [];
 			const routes = await recursive("./src/views");
@@ -130,11 +128,14 @@ cli.command("dev").action(async () => {
 
 		const fetchServerFunction = await createStaticFilesAndFetchServerFunction();
 		const devServer = Bun.serve({ port, fetch: fetchServerFunction });
-
+		const server = await createServer({ mode: "development" });
 		fs.watch("./src", { recursive: true }, async (event, filename) => {
 			const fetchServerFunction =
 				await createStaticFilesAndFetchServerFunction();
 			devServer.reload({ fetch: fetchServerFunction });
+			server.reload({
+				fetch: (req: Request) => fetchFunction(req, "development"),
+			});
 			for (const socket of sockets) {
 				socket.send("refresh");
 			}
