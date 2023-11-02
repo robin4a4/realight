@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.8
+
+### Patch Changes
+
+- 602cc74: try reloading server
+
 ## 0.1.7
 
 ### Patch Changes
