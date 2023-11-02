@@ -22,11 +22,6 @@ cli.command("serve").action(async () => {
 
 // Dev server
 cli.command("dev").action(async () => {
-	if (fs.existsSync("./dist")) {
-		fs.rmSync("./dist", { recursive: true });
-	}
-	fs.mkdirSync("./dist");
-
 	try {
 		await createServer({ mode: "development" });
 
@@ -61,7 +56,9 @@ cli.command("dev").action(async () => {
 		  `,
 				);
 				const dirDist = `./dist/${slug}`;
-
+				if (!fs.existsSync("./dist")) {
+					fs.mkdirSync("./dist");
+				}
 				if (!fs.existsSync(dirDist)) {
 					fs.mkdirSync(dirDist);
 				}

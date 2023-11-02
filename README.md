@@ -14,7 +14,7 @@ Can only be used for toy projects and is really far from being production ready 
 
 Realight is based on the file system router that Bun provides which is itself based on the Nextjs Page router.
 
-First create a `view` folder which will contain all the routes, then create a `home.tsx` file. It will create the `/home` url.
+First create a `views` folder which will contain all the routes, then create a `home.tsx` file. It will create the `/home` url.
  
 In each view you have to export a default react component, for example:
 ```javascript
