@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.11
+
+### Patch Changes
+
+- 163c8a0: fix build
+
 ## 0.1.10
 
 ### Patch Changes
