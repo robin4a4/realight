@@ -177,10 +177,9 @@ cli.command("build").action(async () => {
 			  `,
 			);
 			const dirDist = `./dist/${slug}`;
-			if (fs.existsSync("./dist")) {
-				fs.rmSync("./dist", { recursive: true });
+			if (!fs.existsSync("./dist")) {
+				fs.mkdirSync("./dist");
 			}
-			fs.mkdirSync("./dist");
 
 			if (!fs.existsSync(dirDist)) {
 				fs.mkdirSync(dirDist);
