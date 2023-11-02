@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.5
+
+### Patch Changes
+
+- bbca1d4: remove dist before recreating it
+
 ## 0.1.4
 
 ### Patch Changes
