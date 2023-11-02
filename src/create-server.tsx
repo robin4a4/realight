@@ -39,7 +39,8 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 				);
 
 				if (req.method === "GET") {
-					const slug = routeName.replaceAll("/", "-");
+					const slug =
+						match.name === "/" ? "index" : routeName.replaceAll("/", "-");
 					const manifestFile = await Bun.file(`dist/${slug}/manifest.json`);
 					const manifestExists = await manifestFile.exists(); // boolean;
 					let manifest = null;
