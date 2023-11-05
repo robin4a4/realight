@@ -56,7 +56,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 
           const bootstrapScriptPath =
             mode === "development"
-              ? `http://localhost:3000/${slug}/index.js`
+              ? `http://localhost:3000/${slug}`
               : `/dist/${slug}/index.js`;
 
           const stream = await renderToReadableStream(

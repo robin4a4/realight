@@ -80,8 +80,7 @@ cli.command("dev").action(async () => {
 					const slug = route
 						.replaceAll("src/views/", "")
 						.replaceAll(".tsx", "")
-						.replaceAll("/", "-")
-						.replaceAll("index", "");
+						.replaceAll("/", "-");
 					if (url.pathname === `/${slug}`) {
 						const buildOutput = buildResult[routeIndex];
 						let cssAppendSnippet = "";
@@ -123,7 +122,7 @@ cli.command("dev").action(async () => {
 					}
 				}
 				return new Response("404!", {
-					status: 404
+					status: 404,
 				});
 			};
 		}
