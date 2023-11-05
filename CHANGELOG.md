@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.15
+
+### Patch Changes
+
+- 7750a37: fix typing and make revalidate the default
+
 ## 0.1.14
 
 ### Patch Changes
