@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.13
+
+### Patch Changes
+
+- fb89dd4: fix index.js in dev
+
 ## 0.1.12
 
 ### Patch Changes
