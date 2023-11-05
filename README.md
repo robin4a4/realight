@@ -15,14 +15,14 @@ Can only be used for toy projects and is really far from being production ready 
 Realight is based on the file system router that Bun provides which is itself based on the Nextjs Page router.
 
 First create a `views` folder which will contain all the routes, then create a `home.tsx` file. It will create the `/home` url.
- 
+
 In each view you have to export a default react component, for example:
+
 ```javascript
 export default function View() {
-    return <p>My first route !</p>
+  return <p>My first route !</p>;
 }
 ```
-
 
 ## APIs
 
@@ -33,7 +33,7 @@ Realight uses the same api than remix to fetch data by asking you to write a spe
 ```javascript
 
 export async function query() {
-    const data = await fetch("https://jsonplaceholder.typicode.com/todos")  
+    const data = await fetch("https://jsonplaceholder.typicode.com/todos")
     const todos = await data.json() as Array<Record<string, unknown>>
     return {
         title: "Arbitrary data",
@@ -48,7 +48,7 @@ From which you can retrieve the content in your view using a special hook: `useQ
 import {useQueryData} from "realight"
 
 export async function query() {
-    const data = await fetch("https://jsonplaceholder.typicode.com/todos")  
+    const data = await fetch("https://jsonplaceholder.typicode.com/todos")
     const todos = await data.json() as Array<Record<string, unknown>>
     return {
         title: "Arbitrary data",
@@ -73,56 +73,58 @@ export default function View() {
 
 ### Mutate data
 
-To mutate data you have to use the `useForm` hook that returns a `Form` component and a `state` react state. 
-
+To mutate data you have to use the `useForm` hook that returns a `Form` component and a `state` react state.
 
 ```javascript
-import {useForm} from "realight"
+import { useForm } from "realight";
 
 export default function View() {
-    const form = useForm() // or const {Form, state} = useForm()
-    return (
-        <form.Form method="POST">
-            <input type="email" name="email " />
-            <button type="submit">
-                {form.state === "submitting" ? "loading" : "Subscribe to the newsletter !"}
-            </button>
-        </form.Form>
-    )
+  const form = useForm(); // or const {Form, state} = useForm()
+  return (
+    <form.Form method="POST">
+      <input type="email" name="email " />
+      <button type="submit">
+        {form.state === "submitting"
+          ? "loading"
+          : "Subscribe to the newsletter !"}
+      </button>
+    </form.Form>
+  );
 }
 ```
 
 To retrieve the form data you can export an async `mutate` function:
 
 ```javascript
-import {useForm} from "realight"
-import {fakeDb} from "fake-db-service"
+import { useForm } from "realight";
+import { fakeDb } from "fake-db-service";
 
 export default function View() {
-    const form = useForm() // or const {Form, state} = useForm()
-    return (
-        <form.Form method="POST">
-            <input type="email" name="email " />
-            <button type="submit">
-                {form.state === "submitting" ? "loading" : "Subscribe to the newsletter !"}
-            </button>
-        </form.Form>
-    )
+  const form = useForm(); // or const {Form, state} = useForm()
+  return (
+    <form.Form method="POST">
+      <input type="email" name="email " />
+      <button type="submit">
+        {form.state === "submitting"
+          ? "loading"
+          : "Subscribe to the newsletter !"}
+      </button>
+    </form.Form>
+  );
 }
 
 export async function mutate({ req }: { req: Request }) {
-    const formData = req.formData
-    const success = await fakeDb.add({
-        email: formData.get("email")
-    })
-    return JsonResponse({success});
+  const formData = req.formData;
+  const success = await fakeDb.add({
+    email: formData.get("email"),
+  });
+  return JsonResponse({ success });
 }
 ```
 
 #### Retrieve the result
 
 If you need to retrieve the result of the mutate function in your view you can use the `useMutationData`.
-
 
 ```javascript
 import {useForm, useMutationData} from "realight"
@@ -153,9 +155,9 @@ export async function mutate({ req }: { req: Request }) {
 }
 ```
 
-
 #### Revalidation
-If you show some data and then want to update them you can show the `revalidate` option on the response to automaticcaly re-run the query and show the updated data right after the mutation is done without doing anything.
+
+When you update some data in the mutate function, Realight automaticcaly re-run the query and show the updated data right after the mutation is done without you having to do anything.
 
 ```javascript
 import {useForm, useMutationData, useQueryData} from "realight"
@@ -189,11 +191,23 @@ export async function mutate({ req }: { req: Request }) {
     const success = await fakeDb.update(formData.get("id"), {
         email: formData.get("email")
     })
-    return JsonResponse({success}, { revalidate: true });
+    return JsonResponse({success});
 }
 ```
 
-It allows the view to always be in sync with the data
+It allows the view to always be in sync with the data.
+
+If you want not to refetch anything to avoid unnecessary request, you can use the revalidate option:
+
+```
+export async function mutate({ req }: { req: Request }) {
+    const formData = req.formData
+    const success = await fakeDb.update(formData.get("id"), {
+        email: formData.get("email")
+    })
+    return JsonResponse({success}, {revalidate: false});
+}
+```
 
 ### Meta data
 
@@ -208,18 +222,18 @@ export const meta: Meta = {
     icon: "favicon.png"
 }
 ```
+
 The favicon will be searched in the public folder. If you want to customize your title and description based on the query data you can export a function instead which will have the data passed as an argument:
 
 ```javascript
-import type {Meta} from "realight"
+import type { Meta } from "realight";
 
 export const meta: Meta<typeof query> = (data) => {
-    title: data.meta.title
-    description: data.meta.description
-    icon: "favicon.png"
-}
+  title: data.meta.title;
+  description: data.meta.description;
+  icon: "favicon.png";
+};
 ```
-
 
 ### Database
 

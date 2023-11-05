@@ -91,15 +91,14 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
           switch (response?.type) {
             case "json-response": {
               const data = response.data as Record<string, unknown>;
-              if (response.revalidate) {
-                const queryData = view.query
-                  ? await view.query({
-                      req,
-                      params: match.params,
-                    })
-                  : null;
-                data.__QUERY_DATA__ = queryData;
-              }
+              if (response.revalidate === false) return Response.json(data);
+              const queryData = view.query
+                ? await view.query({
+                    req,
+                    params: match.params,
+                  })
+                : null;
+              data.__QUERY_DATA__ = queryData;
               return Response.json(data);
             }
             default:
