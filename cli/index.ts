@@ -122,7 +122,9 @@ cli.command("dev").action(async () => {
 						}
 					}
 				}
-				return new Response("404!");
+				return new Response("404!", {
+					status: 404
+				});
 			};
 		}
 
