@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.16
+
+### Patch Changes
+
+- 51f8ddb: fix build and add browser caching for statics
+
 ## 0.1.15
 
 ### Patch Changes
