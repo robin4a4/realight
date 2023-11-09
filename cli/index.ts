@@ -5,6 +5,7 @@ import { createServer } from "../src/create-server";
 import recursive from "recursive-readdir";
 import { createWebSocketServer } from "../src/dev-tools/createWebsocketServer";
 import { BuildArtifact } from "bun";
+import { createSlug } from "../src/utils";
 const port = 3000;
 
 const cli = cac("realight");
@@ -20,12 +21,19 @@ cli.command("serve").action(async () => {
 	}
 });
 
+function createBuildSlug(route: string) {
+	return createSlug(route.replaceAll("src/views/", ""));
+}
+
 // Dev server
 cli.command("dev").action(async () => {
 	try {
 		await createServer({ mode: "development" });
 
 		async function createStaticFilesAndFetchServerFunction() {
+			//  clean the dist folder before building
+			fs.rmSync("./dist", { recursive: true });
+
 			const buildResult: Array<BuildArtifact[]> = [];
 			const routes = await recursive("./src/views");
 			if (!fs.existsSync("./tmp")) {
@@ -33,10 +41,8 @@ cli.command("dev").action(async () => {
 			}
 
 			for await (const route of routes) {
-				const slug = route
-					.replaceAll("src/views/", "")
-					.replaceAll(".tsx", "")
-					.replaceAll("/", "-");
+				const slug = createBuildSlug(route);
+
 				const dirTemp = `./tmp/${slug}`;
 				if (!fs.existsSync(dirTemp)) {
 					fs.mkdirSync(dirTemp);
@@ -77,10 +83,7 @@ cli.command("dev").action(async () => {
 				const url = new URL(req.url);
 
 				for (const [routeIndex, route] of routes.entries()) {
-					const slug = route
-						.replaceAll("src/views/", "")
-						.replaceAll(".tsx", "")
-						.replaceAll("/", "-");
+					const slug = createBuildSlug(route);
 					if (url.pathname === `/${slug}`) {
 						const buildOutput = buildResult[routeIndex];
 						let cssAppendSnippet = "";
