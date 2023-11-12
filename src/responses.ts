@@ -6,7 +6,17 @@ export function JsonResponse<TData = QueryDefaultType>(
 ) {
 	return {
 		type: "json-response",
+		url: "",
 		data,
 		...options,
+	};
+}
+
+export function RedirectResponse(url: string) {
+	return {
+		type: "redirect-response",
+		data: null,
+		revalidate: false,
+		url,
 	};
 }

@@ -1,4 +1,4 @@
-import { JsonResponse } from "./responses";
+import { JsonResponse, RedirectResponse } from "./responses";
 
 export type QueryDefaultType =
 	| Record<string, unknown>
@@ -20,6 +20,26 @@ export type MetaObject = {
 	icon: string;
 };
 
+export type QueryType = ({
+	req,
+	searchParams,
+	params,
+}: {
+	req: Request;
+	searchParams?: URLSearchParams;
+	params?: Params;
+}) => Promise<QueryDefaultType>;
+
+export type MutateType = ({
+	req,
+	searchParams,
+	params,
+}: {
+	req: Request;
+	searchParams?: URLSearchParams;
+	params?: Params;
+}) => ReturnType<typeof JsonResponse | typeof RedirectResponse>;
+
 export type Meta<
 	TQueryData extends (() => Promise<QueryDefaultType>) | null = null,
 > = TQueryData extends () => Promise<QueryDefaultType>
@@ -27,24 +47,8 @@ export type Meta<
 	: MetaObject;
 
 export type ViewModuleType = {
-	query?: ({
-		req,
-		searchParams,
-		params,
-	}: {
-		req: Request;
-		searchParams?: URLSearchParams;
-		params?: Params;
-	}) => Promise<QueryDefaultType>;
-	mutate?: ({
-		req,
-		searchParams,
-		params,
-	}: {
-		req: Request;
-		searchParams?: URLSearchParams;
-		params?: Params;
-	}) => ReturnType<typeof JsonResponse>;
+	query?: QueryType;
+	mutate?: MutateType;
 	meta?: Meta<() => Promise<QueryDefaultType>>;
 	default: (viewProps?: ViewProps) => React.ReactNode;
 };

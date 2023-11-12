@@ -100,6 +100,11 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 							data.__QUERY_DATA__ = queryData;
 							return Response.json(data);
 						}
+						case "redirect-response": {
+							const { url } = response;
+							return Response.redirect(url);
+						}
+
 						default:
 							return new Response("Not Found", { status: 404 });
 					}
