@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.17
+
+### Patch Changes
+
+- a8024ee: add redirect response and fix typing
+
 ## 0.1.16
 
 ### Patch Changes
