@@ -252,3 +252,10 @@ export const meta: Meta<typeof query> = (data) => {
 ### Database
 
 If you want to store data in a database you can use the `realight/db` package that exposes a bun sqlite database. You can also use the native bun sqlite db but you'll have to import it dynamically in either the query or mutate function. Using the `realight/db` you'll be able to import it from the top.
+
+
+## TODO
+
+- forwardRef on form.Form
+- named and valued buttons in form
+- 

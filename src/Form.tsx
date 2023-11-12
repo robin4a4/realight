@@ -1,7 +1,14 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { ComponentProps, FormEvent, useMemo, useRef, useState } from "react";
+import {
+	ComponentProps,
+	FormEvent,
+	forwardRef,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { useInternalMutationData } from "./mutation-data-context";
 import { useInternalQueryData } from "./query-data-context";
 
@@ -13,17 +20,10 @@ export function useForm() {
 	const abortControllerRef = useRef(new AbortController());
 	const internalQueryData = useInternalQueryData();
 	const internalMutationData = useInternalMutationData();
-	const submit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		setState("submitting");
-		abortControllerRef.current.abort();
-		abortControllerRef.current = new AbortController();
 
-		const form = e.target as HTMLFormElement;
-		const formData = new FormData(form);
-		const currentUrl = new URL(window.location.href);
-		fetch(currentUrl, {
-			method: form.method,
+	const submitFormData = (url: string, formData: FormData, method: string) => {
+		fetch(url, {
+			method,
 			body: formData,
 			signal: abortControllerRef.current.signal,
 		})
@@ -44,15 +44,45 @@ export function useForm() {
 			});
 	};
 
+	const submit = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setState("submitting");
+		abortControllerRef.current.abort();
+		abortControllerRef.current = new AbortController();
+
+		const form = e.target as HTMLFormElement;
+		const formData = new FormData(form);
+		const currentUrl = new URL(window.location.href);
+		submitFormData(currentUrl.pathname, formData, form.method);
+	};
+
+	const submitObject = (obj: Record<string, unknown>) => {
+		setState("submitting");
+		abortControllerRef.current.abort();
+		abortControllerRef.current = new AbortController();
+		const formData = new FormData();
+
+		for (const key in obj) {
+			// @ts-ignore
+			formData.append(key, obj[key]);
+		}
+
+		const currentUrl = new URL(window.location.href);
+		submitFormData(currentUrl.pathname, formData, "POST");
+	};
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const Form = useMemo(() => {
-		const Form = (props: Omit<ComponentProps<"form">, "onClick">) => {
+		const Form = forwardRef<
+			HTMLFormElement,
+			Omit<ComponentProps<"form">, "onClick">
+		>(function Form(props, ref) {
 			return (
-				<form {...props} onSubmit={(e) => submit(e)}>
+				<form ref={ref} {...props} onSubmit={(e) => submit(e)}>
 					{props.children}
 				</form>
 			);
-		};
+		});
 		return Form;
 	}, [""]);
 
@@ -61,6 +91,7 @@ export function useForm() {
 			Form,
 			state,
 			submit,
+			submitObject,
 		};
 	}, [Form, state, submit]);
 
