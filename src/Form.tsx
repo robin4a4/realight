@@ -35,7 +35,7 @@ export function useForm() {
 					internalQueryData?.setCurrentQueryData(__QUERY_DATA__);
 				}
 				if (data.redirect) {
-					window.history.pushState(null, "", data.redirect);
+					window.location.replace(data.redirect);
 				}
 				setState("idle");
 			})
