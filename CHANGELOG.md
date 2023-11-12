@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.21
+
+### Patch Changes
+
+- c2cd5fd: fix redirect 2
+
 ## 0.1.20
 
 ### Patch Changes
