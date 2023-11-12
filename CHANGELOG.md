@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.18
+
+### Patch Changes
+
+- 97b1895: add QueryProps and MutateProps
+
 ## 0.1.17
 
 ### Patch Changes
