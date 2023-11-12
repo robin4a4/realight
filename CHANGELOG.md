@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.20
+
+### Patch Changes
+
+- 1f879a3: fix redirect
+
 ## 0.1.19
 
 ### Patch Changes
