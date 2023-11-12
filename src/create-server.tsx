@@ -102,7 +102,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 						}
 						case "redirect-response": {
 							const { url } = response;
-							return Response.redirect(url);
+							return Response.json({ redirect: url });
 						}
 
 						default:
