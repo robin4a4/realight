@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.22
+
+### Patch Changes
+
+- 21291d0: add submitObject method
+
 ## 0.1.21
 
 ### Patch Changes
