@@ -209,6 +209,20 @@ export async function mutate({ req }: { req: Request }) {
 }
 ```
 
+#### Redirect
+
+If you want to redirect to a new url after the mutation you can use `RedirectResponse`:
+
+```
+export async function mutate({ req }: { req: Request }) {
+    const formData = req.formData
+    const success = await fakeDb.update(formData.get("id"), {
+        email: formData.get("email")
+    })
+    return RedirectResponse("/home");
+}
+```
+
 ### Meta data
 
 If you want to change the title description and favicon you can export a `meta` const from your view:
