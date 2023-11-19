@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.23
+
+### Patch Changes
+
+- 07b8983: add search params to query and mutate functions
+
 ## 0.1.22
 
 ### Patch Changes
