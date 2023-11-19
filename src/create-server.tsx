@@ -38,15 +38,15 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 					`${match.filePath}${refreshKey}`
 				);
 
+				const searchParams = new URLSearchParams(match.query);
 				if (req.method === "GET") {
 					const slug = createSlug(match.src);
 					const manifestFile = await Bun.file(`dist/${slug}/manifest.json`);
 					const manifestExists = await manifestFile.exists(); // boolean;
 					let manifest = null;
 					if (manifestExists) manifest = JSON.parse(await manifestFile.text());
-
 					const data = view.query
-						? await view.query({ req, params: match.params })
+						? await view.query({ req, params: match.params, searchParams })
 						: null;
 					const ViewComponent = view.default;
 
@@ -61,7 +61,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 					const stream = await renderToReadableStream(
 						<Layout meta={meta} data={data} manifest={manifest}>
 							<ViewComponent
-								searchParams={new URLSearchParams(match.query)}
+								searchParams={searchParams}
 								params={match.params}
 							/>
 						</Layout>,
@@ -85,7 +85,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 				}
 				if (req.method === "POST") {
 					const response = view.mutate
-						? await view.mutate({ req, params: match.params })
+						? await view.mutate({ req, params: match.params, searchParams })
 						: null;
 					switch (response?.type) {
 						case "json-response": {
