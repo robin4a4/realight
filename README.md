@@ -259,7 +259,7 @@ If you want to execute something at each request you can create a `middleware.ts
 
 ```javascript
 // src/middleware.ts
-import type { MiddlewareType } from "realight";
+import type { RequestType } from "realight";
 
 export default ({request, params, searchParams}: RequestType) => {
     if (Math.random() > 0.5) {
