@@ -1,6 +1,6 @@
 import { renderToReadableStream } from "react-dom/server";
 import { Layout } from "./Layout";
-import type { ViewModuleType } from "./types";
+import type { MiddlewareType, ViewModuleType } from "./types";
 import { createSlug } from "./utils";
 
 const router = new Bun.FileSystemRouter({
@@ -10,17 +10,30 @@ const router = new Bun.FileSystemRouter({
 
 const port = process.env.PORT || 8080;
 
-const middlewaresFile = await Bun.file("src/middlewares.ts");
-const middlewaresExists = await middlewaresFile.exists();
+const bootstrapSrcPath = "src/bootstrap.ts";
+const bootstrapFile = await Bun.file(bootstrapSrcPath);
+const bootstrapExists = await bootstrapFile.exists();
 
-if (middlewaresExists) {
+if (bootstrapExists) {
+	const bootstrapModule = (await import(
+		`${process.cwd()}/${bootstrapSrcPath}`
+	)) as { default: () => void };
+
+	if (bootstrapModule.default && typeof bootstrapModule.default === "function")
+		bootstrapModule.default();
+}
+
+let middleware: MiddlewareType | null = null;
+const middlewareSrcPath = "src/middleware.ts";
+const middlewareFile = await Bun.file(middlewareSrcPath);
+const middlewareExists = await middlewareFile.exists();
+
+if (middlewareExists) {
 	const middlewareModule = (await import(
-		`${process.cwd()}/src/middlewares.ts`
-	)) as { middlewares: Array<() => void> };
+		`${process.cwd()}/${middlewareSrcPath}`
+	)) as { default: MiddlewareType };
 
-	for (const middlewareFn of middlewareModule.middlewares) {
-		middlewareFn();
-	}
+	middleware = middlewareModule.default;
 }
 
 export function createServer({ mode }: { mode: "development" | "production" }) {
@@ -30,6 +43,8 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 			const match = router.match(req.url);
 			if (match) {
 				let refreshKey = "";
+				const searchParams = new URLSearchParams(match.query);
+
 				if (mode === "development") {
 					const timestamp = new Date().getTime();
 					refreshKey = `?refresh=${timestamp}`;
@@ -38,7 +53,21 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 					`${match.filePath}${refreshKey}`
 				);
 
-				const searchParams = new URLSearchParams(match.query);
+				if (middleware && typeof middleware === "function") {
+					const middlewareResponse = middleware({
+						req,
+						params: match.params,
+						searchParams,
+					});
+					if (middlewareResponse) {
+						return new Response(null, {
+							status: 302,
+							headers: {
+								Location: middlewareResponse.url,
+							},
+						});
+					}
+				}
 				if (req.method === "GET") {
 					const slug = createSlug(match.src);
 					const manifestFile = await Bun.file(`dist/${slug}/manifest.json`);
