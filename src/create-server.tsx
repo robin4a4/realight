@@ -1,6 +1,6 @@
 import { renderToReadableStream } from "react-dom/server";
 import { Layout } from "./Layout";
-import type { MiddlewareType, ViewModuleType } from "./types";
+import type { BootstrapType, MiddlewareType, ViewModuleType } from "./types";
 import { createSlug } from "./utils";
 
 const router = new Bun.FileSystemRouter({
@@ -17,7 +17,7 @@ const bootstrapExists = await bootstrapFile.exists();
 if (bootstrapExists) {
 	const bootstrapModule = (await import(
 		`${process.cwd()}/${bootstrapSrcPath}`
-	)) as { default: () => void };
+	)) as { default: BootstrapType };
 
 	if (bootstrapModule.default && typeof bootstrapModule.default === "function")
 		bootstrapModule.default();
