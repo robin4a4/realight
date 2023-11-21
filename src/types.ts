@@ -20,13 +20,7 @@ export type MetaObject = {
 	icon: string;
 };
 
-export type QueryProps = {
-	req: Request;
-	searchParams?: URLSearchParams;
-	params?: Params;
-};
-
-export type MutateProps = {
+export type RequestType = {
 	req: Request;
 	searchParams?: URLSearchParams;
 	params?: Params;
@@ -36,13 +30,21 @@ export type QueryType = ({
 	req,
 	searchParams,
 	params,
-}: QueryProps) => Promise<QueryDefaultType>;
+}: RequestType) => Promise<QueryDefaultType>;
 
 export type MutateType = ({
 	req,
 	searchParams,
 	params,
-}: MutateProps) => ReturnType<typeof JsonResponse | typeof RedirectResponse>;
+}: RequestType) => Promise<
+	ReturnType<typeof JsonResponse | typeof RedirectResponse>
+>;
+
+export type MiddlewareType = (
+	request: RequestType,
+) => ReturnType<typeof RedirectResponse> | null | undefined;
+
+export type BootstrapType = () => void;
 
 export type Meta<
 	TQueryData extends (() => Promise<QueryDefaultType>) | null = null,

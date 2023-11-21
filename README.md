@@ -253,9 +253,30 @@ export const meta: Meta<typeof query> = (data) => {
 
 If you want to store data in a database you can use the `realight/db` package that exposes a bun sqlite database. You can also use the native bun sqlite db but you'll have to import it dynamically in either the query or mutate function. Using the `realight/db` you'll be able to import it from the top.
 
+## Middlewares
 
-## TODO
+If you want to execute something at each request you can create a `middleware.ts` file in your src folder. This file should export a default function of type `MiddlewareType`:
 
-- forwardRef on form.Form
-- named and valued buttons in form
-- 
+```javascript
+// src/middleware.ts
+import { RedirectResponse, type RequestType } from "realight";
+
+export default ({request, params, searchParams}: RequestType) => {
+    if (Math.random() > 0.5) {
+        return RedirectResponse("https://example.com")
+    }
+}
+```
+
+## Bootstrap scripts
+
+If you want to execute something before the server starts you can create a `bootstrap.ts` file in your src folder. This file should export a default function of type `BootstrapType`:
+
+```javascript
+// src/bootstrap.ts
+import createDb from "super-db"
+
+export default () => {
+    createDb()
+}
+```
