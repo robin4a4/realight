@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.27
+
+### Patch Changes
+
+- 0851b42: add custom layout to client
+
 ## 0.1.26
 
 ### Patch Changes
