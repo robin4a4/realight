@@ -42,7 +42,7 @@ export type MutateType = ({
 
 export type MiddlewareType = (
 	request: RequestType,
-) => ReturnType<typeof RedirectResponse> | null | undefined;
+) => ReturnType<typeof RedirectResponse> | Response | null | undefined;
 
 export type BootstrapType = () => void;
 

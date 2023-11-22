@@ -60,13 +60,17 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 						searchParams,
 					});
 					if (middlewareResponse) {
-						return new Response(null, {
-							status: 302,
-							headers: {
-								Location: middlewareResponse.url,
-							},
-						});
+						if (middlewareResponse.type === "redirect")
+							return new Response(null, {
+								status: 302,
+								headers: {
+									Location: middlewareResponse.url,
+								},
+							});
+						else
+							return middlewareResponse as Response
 					}
+
 				}
 				if (req.method === "GET") {
 					const slug = createSlug(match.src);
