@@ -261,11 +261,13 @@ If you want to execute something at each request you can create a `middleware.ts
 // src/middleware.ts
 import { RedirectResponse, type RequestType } from "realight";
 
-export default ({request, params, searchParams}: RequestType) => {
+const middleware: MiddlewareType = ({request, params, searchParams}) => {
     if (Math.random() > 0.5) {
         return RedirectResponse("https://example.com")
     }
 }
+
+export default middleware
 ```
 
 ## Bootstrap scripts
