@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.24
+
+### Patch Changes
+
+- 5ce496b: add real middlewares
+
 ## 0.1.23
 
 ### Patch Changes
