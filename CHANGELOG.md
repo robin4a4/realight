@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.25
+
+### Patch Changes
+
+- 177dc3a: fix middleware types
+
 ## 0.1.24
 
 ### Patch Changes
