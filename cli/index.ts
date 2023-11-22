@@ -54,9 +54,15 @@ cli.command("dev").action(async () => {
 			import { Layout, clientLiveReload } from "realight";
 			import { hydrateRoot } from "react-dom/client";
 			import View from "../../${route}";
-
+			
 			const realightData = window.__REALIGHT_DATA__
-			hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
+			import("../../src/layout").then((module) => {
+				const CustomLayout = module.default;
+				hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data}><CustomLayout><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></CustomLayout></Layout>);
+			}).catch(() => {
+				hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
+			});
+			
 			clientLiveReload();
 		  `,
 				);
@@ -175,7 +181,14 @@ cli.command("build").action(async () => {
 				import { hydrateRoot } from "react-dom/client";
 				import View from "../../${route}";
 				const realightData = window.__REALIGHT_DATA__
-				hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data} manifest={realightData.manifest}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
+				
+				import("../../src/layout").then((module) => {
+					const CustomLayout = module.default;
+					hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data} manifest={realightData.manifest}><CustomLayout><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></CustomLayout></Layout>);
+				}).catch(() => {
+					hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data} manifest={realightData.manifest}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
+				});
+				
 			  `,
 			);
 			const dirDist = `./dist/${slug}`;
