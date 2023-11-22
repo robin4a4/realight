@@ -36,6 +36,10 @@ if (middlewareExists) {
 	middleware = middlewareModule.default;
 }
 
+const layoutSrcPath = "src/layout.tsx";
+const layoutFile = Bun.file(layoutSrcPath);
+const layoutExists = await layoutFile.exists();
+
 export function createServer({ mode }: { mode: "development" | "production" }) {
 	const server = Bun.serve({
 		port: process.env.PORT || 8080,
@@ -61,7 +65,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 					});
 					if (middlewareResponse) {
 						if (middlewareResponse.type === "redirect-response") {
-							const {revalidate, ...options} = middlewareResponse.options;
+							const { revalidate, ...options } = middlewareResponse.options;
 							return new Response(null, {
 								status: 302,
 								headers: {
@@ -69,22 +73,29 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 									Location: middlewareResponse.url,
 								},
 							});
-						}
-						else {
-							return middlewareResponse as Response
+						} else {
+							return middlewareResponse as Response;
 						}
 					}
-
 				}
 				if (req.method === "GET") {
 					const slug = createSlug(match.src);
-					const manifestFile = await Bun.file(`dist/${slug}/manifest.json`);
+					const manifestFile = Bun.file(`dist/${slug}/manifest.json`);
 					const manifestExists = await manifestFile.exists(); // boolean;
 					let manifest = null;
 					if (manifestExists) manifest = JSON.parse(await manifestFile.text());
 					const data = view.query
 						? await view.query({ req, params: match.params, searchParams })
 						: null;
+
+					let CustomLayoutComponent = (_props?: {
+						children: React.ReactNode;
+					}) => <></>;
+					if (layoutExists)
+						CustomLayoutComponent = (
+							await import(`${process.cwd()}/${layoutSrcPath}`)
+						).default;
+
 					const ViewComponent = view.default;
 
 					const meta = view.meta;
@@ -97,10 +108,12 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 
 					const stream = await renderToReadableStream(
 						<Layout meta={meta} data={data} manifest={manifest}>
-							<ViewComponent
-								searchParams={searchParams}
-								params={match.params}
-							/>
+							<CustomLayoutComponent>
+								<ViewComponent
+									searchParams={searchParams}
+									params={match.params}
+								/>
+							</CustomLayoutComponent>
 						</Layout>,
 						{
 							bootstrapModules: [bootstrapScriptPath],
@@ -154,8 +167,9 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 				const file = Bun.file(url.pathname.replace(/^\/+/, ""));
 				if (!file) return new Response("Not Found", { status: 404 });
 
+				const fileString = await file.text();
 				const hasher = new Bun.CryptoHasher("md5");
-				hasher.update(file.toString());
+				hasher.update(fileString);
 				const etag = hasher.digest("hex");
 				if (req.headers.get("If-None-Match") === etag) {
 					return new Response(null, { status: 304 });

@@ -54,7 +54,6 @@ cli.command("dev").action(async () => {
 			import { Layout, clientLiveReload } from "realight";
 			import { hydrateRoot } from "react-dom/client";
 			import View from "../../${route}";
-			import "../../src/global.css";
 
 			const realightData = window.__REALIGHT_DATA__
 			hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
@@ -175,7 +174,6 @@ cli.command("build").action(async () => {
 				import { Layout } from "realight";
 				import { hydrateRoot } from "react-dom/client";
 				import View from "../../${route}";
-				import "../../src/global.css";
 				const realightData = window.__REALIGHT_DATA__
 				hydrateRoot(document,<Layout meta={realightData.meta} data={realightData.data} manifest={realightData.manifest}><View searchParams={new URLSearchParams(realightData.searchParams)} params={realightData.params}/></Layout>);
 			  `,
