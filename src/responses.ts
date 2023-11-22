@@ -2,21 +2,24 @@ import type { QueryDefaultType } from "./types";
 
 export function JsonResponse<TData = QueryDefaultType>(
 	data: TData,
-	options: { revalidate?: boolean } = {},
+	options: { revalidate?: boolean } & ResponseInit = {},
 ) {
 	return {
 		type: "json-response",
 		url: "",
 		data,
-		...options,
+		options,
 	};
 }
 
-export function RedirectResponse(url: string) {
+export function RedirectResponse(url: string, options: ResponseInit = {} ) {
 	return {
 		type: "redirect-response",
-		data: null,
-		revalidate: false,
 		url,
+		data: null,
+		options: {
+			revalidate: false,
+			...options
+		}
 	};
 }

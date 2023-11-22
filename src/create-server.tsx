@@ -11,7 +11,7 @@ const router = new Bun.FileSystemRouter({
 const port = process.env.PORT || 8080;
 
 const bootstrapSrcPath = "src/bootstrap.ts";
-const bootstrapFile = await Bun.file(bootstrapSrcPath);
+const bootstrapFile = Bun.file(bootstrapSrcPath);
 const bootstrapExists = await bootstrapFile.exists();
 
 if (bootstrapExists) {
@@ -25,7 +25,7 @@ if (bootstrapExists) {
 
 let middleware: MiddlewareType | null = null;
 const middlewareSrcPath = "src/middleware.ts";
-const middlewareFile = await Bun.file(middlewareSrcPath);
+const middlewareFile = Bun.file(middlewareSrcPath);
 const middlewareExists = await middlewareFile.exists();
 
 if (middlewareExists) {
@@ -53,22 +53,26 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 					`${match.filePath}${refreshKey}`
 				);
 
-				if (middleware && typeof middleware === "function") {
-					const middlewareResponse = middleware({
+				if (middleware) {
+					const middlewareResponse = await middleware({
 						req,
 						params: match.params,
 						searchParams,
 					});
 					if (middlewareResponse) {
-						if (middlewareResponse.type === "redirect")
+						if (middlewareResponse.type === "redirect-response") {
+							const {revalidate, ...options} = middlewareResponse.options;
 							return new Response(null, {
 								status: 302,
 								headers: {
+									...options.headers,
 									Location: middlewareResponse.url,
 								},
 							});
-						else
+						}
+						else {
 							return middlewareResponse as Response
+						}
 					}
 
 				}
@@ -123,7 +127,7 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 					switch (response?.type) {
 						case "json-response": {
 							const data = response.data as Record<string, unknown>;
-							if (response.revalidate === false) return Response.json(data);
+							if (!response.options.revalidate) return Response.json(data);
 							const queryData = view.query
 								? await view.query({
 										req,
@@ -131,11 +135,11 @@ export function createServer({ mode }: { mode: "development" | "production" }) {
 								  })
 								: null;
 							data.__QUERY_DATA__ = queryData;
-							return Response.json(data);
+							return Response.json(data, response?.options);
 						}
 						case "redirect-response": {
 							const { url } = response;
-							return Response.json({ redirect: url });
+							return Response.json({ redirect: url }, response?.options);
 						}
 
 						default:
