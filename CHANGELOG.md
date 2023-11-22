@@ -1,5 +1,11 @@
 # realight
 
+## 0.1.26
+
+### Patch Changes
+
+- 2ee610a: add layout and fix etag
+
 ## 0.1.25
 
 ### Patch Changes
